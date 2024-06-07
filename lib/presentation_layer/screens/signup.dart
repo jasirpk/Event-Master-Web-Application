@@ -4,6 +4,7 @@ import 'package:event_master_web/presentation_layer/components/auth_bottom_text.
 import 'package:event_master_web/presentation_layer/components/password_field.dart';
 import 'package:event_master_web/presentation_layer/components/pushable_button.dart';
 import 'package:event_master_web/presentation_layer/components/text_field.dart';
+import 'package:event_master_web/presentation_layer/screens/home.dart';
 import 'package:event_master_web/presentation_layer/screens/signin.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class SignupScreen extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/google_ath_img.jpg'),
+                image: AssetImage('assets/images/we_img.webp'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -114,7 +115,12 @@ class SignupScreen extends StatelessWidget {
                                       EdgeInsets.symmetric(horizontal: 16.0),
                                   child: pushableButton_Widget(
                                     text: 'Sign UP',
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (ctx) {
+                                        return HomeScreen();
+                                      }));
+                                    },
                                   ),
                                 ),
                                 SizedBox(height: 20),

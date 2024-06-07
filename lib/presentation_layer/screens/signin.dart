@@ -6,6 +6,7 @@ import 'package:event_master_web/presentation_layer/components/password_field.da
 import 'package:event_master_web/presentation_layer/components/pushable_button.dart';
 import 'package:event_master_web/presentation_layer/components/squretile.dart';
 import 'package:event_master_web/presentation_layer/components/text_field.dart';
+import 'package:event_master_web/presentation_layer/screens/home.dart';
 import 'package:event_master_web/presentation_layer/screens/signup.dart';
 import 'package:flutter/material.dart';
 
@@ -95,7 +96,12 @@ class LoginScreen extends StatelessWidget {
                                 SizedBox(height: 16),
                                 pushableButton_Widget(
                                   text: 'Login',
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(builder: (ctx) {
+                                      return HomeScreen();
+                                    }));
+                                  },
                                 ),
                                 SizedBox(height: 16),
                                 Text(

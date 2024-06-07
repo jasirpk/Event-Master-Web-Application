@@ -102,7 +102,12 @@ class GetStartedScreen extends StatelessWidget {
                           SizedBox(
                             height: 60,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (ctx) {
+                                  return LoginScreen();
+                                }));
+                              },
                               style: ButtonStyle(
                                 backgroundColor:
                                     WidgetStateProperty.all<Color>(Colors.teal),
