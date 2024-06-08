@@ -25,10 +25,10 @@ class SignUp extends AuthEvent {
 class Logout extends AuthEvent {}
 
 // .....................Form Validation..............!
-class TextFieldTextTexChanged extends AuthEvent {
+class TextFieldTextChanged extends AuthEvent {
   final String text;
 
-  TextFieldTextTexChanged({required this.text});
+  TextFieldTextChanged({required this.text});
 }
 
 class TextFieldPasswordChanged extends AuthEvent {

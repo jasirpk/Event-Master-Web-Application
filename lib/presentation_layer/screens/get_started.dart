@@ -1,6 +1,6 @@
-import 'package:event_master_web/presentation_layer/screens/signin.dart';
-import 'package:event_master_web/presentation_layer/screens/signup.dart';
+import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class GetStartedScreen extends StatelessWidget {
   const GetStartedScreen({super.key});
@@ -32,19 +32,15 @@ class GetStartedScreen extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-                    return LoginScreen();
-                  }));
+                  Get.toNamed(RoutsClass.getLoginRout());
                 },
                 child: Text('Login'),
               ),
               SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (ctx) => SignupScreen()),
-                    (Route<dynamic> route) => false,
+                  Get.toNamed(
+                    RoutsClass.getSignUpRoute(),
                   );
                 },
                 style: ButtonStyle(
@@ -103,10 +99,7 @@ class GetStartedScreen extends StatelessWidget {
                             height: 60,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (ctx) {
-                                  return LoginScreen();
-                                }));
+                                Get.toNamed(RoutsClass.getLoginRout());
                               },
                               style: ButtonStyle(
                                 backgroundColor:

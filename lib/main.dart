@@ -1,8 +1,12 @@
+import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
+import 'package:event_master_web/data_layer/bloc/auth_bloc.dart';
 import 'package:event_master_web/firebase_options.dart';
-import 'package:event_master_web/presentation_layer/screens/get_started.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,15 +21,21 @@ class EventMasterWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-              textTheme: TextTheme(
-                  bodyLarge: TextStyle(color: Colors.white),
-                  bodyMedium: TextStyle(color: Colors.white)),
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal))
-          .copyWith(),
-      home: GetStartedScreen(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AuthBloc()..add(CheckUsrEvent()))
+      ],
+      child: GetMaterialApp(
+        initialRoute: RoutsClass.getSplashRoute(),
+        getPages: RoutsClass.routes,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+                textTheme: TextTheme(
+                    bodyLarge: TextStyle(color: Colors.white),
+                    bodyMedium: TextStyle(color: Colors.white)),
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal))
+            .copyWith(),
+      ),
     );
   }
 }

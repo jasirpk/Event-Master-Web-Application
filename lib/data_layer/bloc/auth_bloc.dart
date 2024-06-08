@@ -4,9 +4,9 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/models/logic_models/admin_detail.dart';
-import 'package:event_master_web/presentation_layer/screens/get_started.dart';
-import 'package:event_master_web/presentation_layer/screens/home.dart';
+import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
@@ -86,22 +86,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print('SharedPreferences Email: $email');
       if (uid != null) {
         print('User found in sharedPreferenc');
-        Get.offAll(() => HomeScreen());
+        Get.offAllNamed(RoutsClass.getHomeRout());
         emit(Authenticated(UserModel(uid: uid, email: email, password: '')));
       } else {
         print('User NOt found in FirebaseAuth');
         emit(UnAuthenticated());
-        Get.offAll(() => GetStartedScreen());
+        Get.offAllNamed(RoutsClass.getSplashRoute());
         final user = auth.currentUser;
 
         if (user != null) {
           print('User Fount in FireBase');
-          Get.offAll(() => HomeScreen());
+          Get.offAllNamed(RoutsClass.getHomeRout());
           emit(Authenticated(UserModel(uid: uid, email: email, password: '')));
         } else {
           emit(UnAuthenticated());
           print('User Not found in FirebaseAuth');
-          Get.offAll(() => GetStartedScreen());
+          Get.offAllNamed(RoutsClass.getSplashRoute());
         }
       }
     });
@@ -166,7 +166,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     // .....................Validation............!
 
-    on<TextFieldTextTexChanged>(validateTextField);
+    on<TextFieldTextChanged>(validateTextField);
     on<TextFieldPasswordChanged>(validatePasswordField);
     on<TogglePasswordVisiblility>(togglePasswordVisibility);
 
@@ -196,7 +196,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 // ..................Validation..............!
 
   FutureOr<void> validateTextField(
-      TextFieldTextTexChanged event, Emitter<AuthState> emit) {
+      TextFieldTextChanged event, Emitter<AuthState> emit) {
     try {
       emit(isValidEmail(event.text)
           ? TextValid()
