@@ -8,7 +8,6 @@ import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,11 +26,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final UserCredential = await auth.signInWithEmailAndPassword(
             email: event.email, password: event.password);
         final user = UserCredential.user!;
-        await saveAuthState(user.uid, user.email!);
-        print('Account is Authenticated');
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        String platform = userDoc['platform'];
+        if (platform == 'web') {
+          await saveAuthState(user.uid, user.email!);
+          print('Account is Authenticated');
 
-        emit(Authenticated(
-            UserModel(uid: user.uid, email: user.email, password: '')));
+          emit(Authenticated(
+              UserModel(uid: user.uid, email: user.email, password: '')));
+        } else {
+          emit(AuthenticatedErrors(message: 'Not Authenticated this Platform'));
+          print('Authentication Failed: Not Authenticated for this platform');
+        }
       } catch (e) {
         emit(AuthenticatedErrors(message: 'Not Authenticated'));
         print('Authentication Failed  $e');
@@ -55,9 +64,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             'uid': user.uid,
             'email': user.email,
             'password': event.userModel.password,
+            'platform': 'web',
             'createAt': DateTime.now()
           });
+          await FirebaseAuth.instance.currentUser!.getIdToken(true);
+          await FirebaseAuth.instance.currentUser!
+              .updateProfile(displayName: 'web');
           await saveAuthState(user.uid, user.email!);
+
           log('Account is Authenticated');
           print('Current FirebaseAuth user UID: ${user.uid}');
           print('Current FirebaseAuth user Email: ${user.email}');
@@ -84,6 +98,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       print('SharedPreferences UID: $uid');
       print('SharedPreferences Email: $email');
+
       if (uid != null) {
         print('User found in sharedPreferenc');
         Get.offAllNamed(RoutsClass.getHomeRout());
@@ -91,7 +106,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         print('User NOt found in FirebaseAuth');
         emit(UnAuthenticated());
-        Get.offAllNamed(RoutsClass.getSplashRoute());
+        // Get.offAllNamed(RoutsClass.getSplashRoute());
         final user = auth.currentUser;
 
         if (user != null) {
@@ -101,7 +116,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           emit(UnAuthenticated());
           print('User Not found in FirebaseAuth');
-          Get.offAllNamed(RoutsClass.getSplashRoute());
+          // Get.offAllNamed(RoutsClass.getSplashRoute());
         }
       }
     });
@@ -118,52 +133,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-// Google Authentication...!
-
-    on<GoogleAuth>((event, emit) async {
-      emit(AuthLoading());
-
-      try {
-        final GoogleSignInAccount? googlUser = await GoogleSignIn().signIn();
-        if (googlUser == null) {
-          emit(AuthenticatedErrors(message: 'Google SignIn Canceled'));
-          return;
-        }
-        final GoogleSignInAuthentication? googleAuth =
-            await googlUser.authentication;
-
-        final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
-
-        final UserCredential =
-            await FirebaseAuth.instance.signInWithCredential(credential);
-
-        final user = UserCredential.user;
-
-        if (user != null) {
-          await saveAuthState(user.uid, user.email!);
-          emit(Authenticated(
-              UserModel(uid: user.uid, email: user.email, password: '')));
-          print('Google Authentication Success');
-        } else {
-          emit(AuthenticatedErrors(
-              message: 'Failed to authenticate with Google'));
-        }
-      } catch (e) {
-        emit(AuthenticatedErrors(message: 'Google Authentication Errror $e'));
-      }
-    });
-
-// Googel sign Out...!
-
-    on<SignOutWithGoogle>((event, emit) async {
-      try {
-        await GoogleSignIn().signOut();
-        cleareAuthState();
-      } catch (e) {
-        emit(AuthenticatedErrors(message: 'SignOut Error'));
-      }
-    });
     // .....................Validation............!
 
     on<TextFieldTextChanged>(validateTextField);

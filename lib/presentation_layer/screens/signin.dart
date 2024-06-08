@@ -7,7 +7,6 @@ import 'package:event_master_web/presentation_layer/components/appbar.dart';
 import 'package:event_master_web/presentation_layer/components/auth_bottom_text.dart';
 import 'package:event_master_web/presentation_layer/components/password_field.dart';
 import 'package:event_master_web/presentation_layer/components/pushable_button.dart';
-import 'package:event_master_web/presentation_layer/components/squretile.dart';
 import 'package:event_master_web/presentation_layer/components/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,13 +25,7 @@ class LoginScreen extends StatelessWidget {
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthLoading) {
-          showDialog(
-              context: context,
-              builder: (context) => Center(
-                    child: CircularProgressIndicator(),
-                  ));
-        } else if (state is Authenticated) {
+        if (state is Authenticated) {
           Get.offAllNamed(RoutsClass.getHomeRout());
           showCustomSnackBar('Success', 'Successfully Added');
         } else if (state is AuthenticatedErrors) {
@@ -139,16 +132,6 @@ class LoginScreen extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SqureTile(
-                                        onpressed: () {
-                                          context
-                                              .read<AuthBloc>()
-                                              .add(GoogleAuth());
-                                        },
-                                        imagePath: 'assets/images/google.png',
-                                        title: 'Continue with Google',
-                                      ),
-                                      SizedBox(height: 16),
                                       AuthBottomText(
                                         onpressed: () {
                                           Get.toNamed(

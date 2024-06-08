@@ -52,9 +52,3 @@ class AuthenticationErrors extends AuthEvent {
 // is registered...!
 
 class CheckUsrEvent extends AuthEvent {}
-
-// ....................Google Authentication...........!
-
-class GoogleAuth extends AuthEvent {}
-
-class SignOutWithGoogle extends AuthEvent {}

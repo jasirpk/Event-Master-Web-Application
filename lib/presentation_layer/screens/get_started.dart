@@ -99,7 +99,7 @@ class GetStartedScreen extends StatelessWidget {
                             height: 60,
                             child: ElevatedButton(
                               onPressed: () {
-                                Get.toNamed(RoutsClass.getLoginRout());
+                                Get.offNamed(RoutsClass.getLoginRout());
                               },
                               style: ButtonStyle(
                                 backgroundColor:
