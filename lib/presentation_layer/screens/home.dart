@@ -1,6 +1,7 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/common/style.dart';
 import 'package:event_master_web/data_layer/bloc/auth_bloc.dart';
+import 'package:event_master_web/presentation_layer/components/silver_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -128,102 +129,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             SliverToBoxAdapter(child: SizedBox(height: 40)),
-            SliverAppBar(
-              expandedHeight: 400,
-              flexibleSpace: FlexibleSpaceBar(
-                background: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Stack(
-                      children: [
-                        Image.asset(
-                          'assets/images/admin_home_img.jpg',
-                          fit: BoxFit.contain,
-                          width: constraints.maxWidth,
-                          height: constraints.maxHeight,
-                        ),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Positioned(
-                                child: ClipRRect(
-                                  clipBehavior: Clip.hardEdge,
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Container(
-                                    width: screenWidth * 0.2,
-                                    height: screenHeight * 0.4,
-                                    color: Colors.teal,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 4, vertical: 4),
-                                            child: CircleAvatar(
-                                              maxRadius: screenHeight * 0.06,
-                                              backgroundImage: AssetImage(
-                                                'assets/images/google_ath_img.jpg',
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            'Admin',
-                                            style: TextStyle(
-                                                fontSize: screenHeight * 0.06,
-                                                fontFamily: 'JacquesFracois'),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                child: ClipRRect(
-                                  clipBehavior: Clip.hardEdge,
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    width: screenWidth * 0.2,
-                                    height: screenHeight * 0.4,
-                                    color: Colors.teal,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 4, vertical: 4),
-                                            child: CircleAvatar(
-                                              maxRadius: screenHeight * 0.06,
-                                              backgroundImage: AssetImage(
-                                                'assets/images/Circle-icons-profile.svg.png',
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            'User',
-                                            style: TextStyle(
-                                                fontSize: screenHeight * 0.06,
-                                                fontFamily: 'JacquesFracois'),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
+            SilverStackAppBar(
+                screenWidth: screenWidth, screenHeight: screenHeight),
           ],
         ),
       ),
