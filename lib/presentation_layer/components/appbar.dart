@@ -10,13 +10,10 @@ class AppBarWidget extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: AppBar(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(100),
+        leading: ClipOval(
           child: Image.asset(
             'assets/images/Screenshot 2024-05-22 205021.png',
-            width: MediaQuery.of(context).size.width * 0.1,
-            height: MediaQuery.of(context).size.height * 0.1,
-            fit: BoxFit.contain,
+            fit: BoxFit.fill,
           ),
         ),
         title: Text(

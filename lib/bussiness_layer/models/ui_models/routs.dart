@@ -1,7 +1,7 @@
-import 'package:event_master_web/presentation_layer/screens/get_started.dart';
+import 'package:event_master_web/presentation_layer/screens/auth/get_started.dart';
 import 'package:event_master_web/presentation_layer/screens/home.dart';
-import 'package:event_master_web/presentation_layer/screens/signin.dart';
-import 'package:event_master_web/presentation_layer/screens/signup.dart';
+import 'package:event_master_web/presentation_layer/screens/auth/signin.dart';
+import 'package:event_master_web/presentation_layer/screens/auth/signup.dart';
 import 'package:get/get.dart';
 
 class RoutsClass {

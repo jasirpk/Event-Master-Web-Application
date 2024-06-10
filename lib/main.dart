@@ -30,11 +30,11 @@ class EventMasterWeb extends StatelessWidget {
         getPages: RoutsClass.routes,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-                textTheme: TextTheme(
-                    bodyLarge: TextStyle(color: Colors.white),
-                    bodyMedium: TextStyle(color: Colors.white)),
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal))
-            .copyWith(),
+          brightness: MediaQuery.of(context).platformBrightness,
+          textTheme: TextTheme(
+              bodyLarge: TextStyle(color: Colors.white),
+              bodyMedium: TextStyle(color: Colors.white)),
+        ).copyWith(),
       ),
     );
   }
