@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^2.2.3
   google_sign_in: ^6.2.1
   firebase_core: ^3.0.0
+  draggable_bottom_sheet: ^1.0.2
   
 
 dev_dependencies:
