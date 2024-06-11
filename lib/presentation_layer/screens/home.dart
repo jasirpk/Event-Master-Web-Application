@@ -1,6 +1,6 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/common/style.dart';
-import 'package:event_master_web/data_layer/bloc/auth_bloc.dart';
+import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
 import 'package:event_master_web/presentation_layer/components/bottom_sheet.dart';
 import 'package:event_master_web/presentation_layer/components/silver_appbar.dart';
 import 'package:flutter/material.dart';
@@ -58,9 +58,25 @@ class HomeScreen extends StatelessWidget {
           children: [
             CustomScrollView(
               slivers: [
+                SilverStackAppBar(
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                ),
+                SliverToBoxAdapter(child: SizedBox(height: 40)),
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: Container(
+                      width: screenWidth * 0.8,
+                      child: Divider(
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.0),
                     child: Row(
                       children: [
                         Expanded(
@@ -68,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                           child: Container(
                             height: 380,
                             decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 39, 49, 49),
+                              // color: Color.fromARGB(255, 39, 49, 49),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Padding(
@@ -85,21 +101,25 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(height: 16),
-                                  Container(
-                                    height: 228,
-                                    width: 228,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Add Template \n +',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: screenHeight * 0.022,
-                                          letterSpacing: 1,
+                                  InkWell(
+                                    onTap: () =>
+                                        Get.toNamed(RoutsClass.getFormRout()),
+                                    child: Container(
+                                      height: 228,
+                                      width: 228,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Add Template \n +',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: screenHeight * 0.022,
+                                            letterSpacing: 1,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -131,22 +151,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 SliverToBoxAdapter(child: SizedBox(height: 40)),
-                SliverToBoxAdapter(
-                  child: Center(
-                    child: Container(
-                      width: screenWidth * 0.8,
-                      child: Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(child: SizedBox(height: 40)),
-                SilverStackAppBar(
-                  screenWidth: screenWidth,
-                  screenHeight: screenHeight,
-                ),
                 SliverToBoxAdapter(
                   child: Center(
                     child: Container(

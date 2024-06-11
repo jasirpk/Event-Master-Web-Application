@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/common/style.dart';
-import 'package:event_master_web/data_layer/bloc/auth_bloc.dart';
+import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
 import 'package:event_master_web/presentation_layer/components/appbar.dart';
 import 'package:event_master_web/presentation_layer/components/auth_bottom_text.dart';
 import 'package:event_master_web/presentation_layer/components/password_field.dart';

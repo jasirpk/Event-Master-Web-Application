@@ -60,7 +60,7 @@ class SilverStackAppBar extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    'Admin',
+                                    'Entrepreneur',
                                     style: TextStyle(
                                         fontSize: screenHeight * 0.06,
                                         fontFamily: 'JacquesFracois'),

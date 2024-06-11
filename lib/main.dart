@@ -1,5 +1,5 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
-import 'package:event_master_web/data_layer/bloc/auth_bloc.dart';
+import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
 import 'package:event_master_web/firebase_options.dart';
 
 import 'package:firebase_core/firebase_core.dart';
