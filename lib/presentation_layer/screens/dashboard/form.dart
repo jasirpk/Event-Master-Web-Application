@@ -196,7 +196,7 @@ class AddeTemplateScreen extends StatelessWidget {
                                   .state as ImageSelected)
                               .imageName;
                           await DatabaseMethods()
-                              .addCategoryDetail(
+                              .addVendorCategoryDetail(
                             categoryFields,
                             id,
                             'categories/$id/$imagePath',

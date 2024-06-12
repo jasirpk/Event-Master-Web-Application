@@ -1,6 +1,6 @@
 import 'package:event_master_web/presentation_layer/screens/auth/get_started.dart';
-import 'package:event_master_web/presentation_layer/screens/form.dart';
-import 'package:event_master_web/presentation_layer/screens/home.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/form.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/home.dart';
 import 'package:event_master_web/presentation_layer/screens/auth/signin.dart';
 import 'package:event_master_web/presentation_layer/screens/auth/signup.dart';
 import 'package:get/get.dart';
