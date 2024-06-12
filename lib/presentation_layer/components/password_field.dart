@@ -25,6 +25,11 @@ class PasswordField extends StatelessWidget {
           isPasswordVisible = state.isVisible;
         }
         return TextFormField(
+          onChanged: (text) {
+            context
+                .read<AuthBloc>()
+                .add(TextFieldPasswordChanged(password: text));
+          },
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
           obscureText: !isPasswordVisible,

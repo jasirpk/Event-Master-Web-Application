@@ -111,8 +111,8 @@ class LoginScreen extends StatelessWidget {
                                       final password =
                                           userPasswordController.text;
                                       if (email.isEmpty || password.isEmpty) {
-                                        Get.snackbar(
-                                            'Error', 'Please fill all fields');
+                                        showCustomSnackBar('Error!',
+                                            'please Fill All Fields !');
                                         return;
                                       }
                                       authBloc.add(LoginEvent(
