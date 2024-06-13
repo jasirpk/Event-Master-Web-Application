@@ -19,3 +19,17 @@ class ImagePickerError extends VendorCategoryState {
 
   ImagePickerError({required this.message});
 }
+
+class imageUploading extends VendorCategoryState {}
+
+class ImageUploadSuccess extends VendorCategoryState {
+  final String imageUrl;
+
+  ImageUploadSuccess(this.imageUrl);
+}
+
+class ImageUploadError extends VendorCategoryState {
+  final String message;
+
+  ImageUploadError({required this.message});
+}

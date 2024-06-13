@@ -1,40 +1,29 @@
-import 'package:event_master_web/data_layer/category_bloc/vendor_category_bloc.dart';
-import 'package:event_master_web/data_layer/services/database.dart';
-import 'package:event_master_web/presentation_layer/components/pushable_button.dart';
+import 'dart:typed_data';
+
+import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
+import 'package:event_master_web/presentation_layer/components/form/drop_down.dart';
+import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
+import 'package:event_master_web/presentation_layer/components/form/submit_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import 'package:random_string/random_string.dart';
 
 class AddeTemplateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String? selectedClient;
-    TextEditingController categoryNameController = TextEditingController();
-    TextEditingController descriptionController = TextEditingController();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
-    final List<Map<String, dynamic>> dropdownItems = [
-      {
-        'value': 'Entrepreneur',
-        'text': 'Entrepreneur',
-        'icon': Icons.business_center,
-      },
-      {
-        'value': 'Client',
-        'text': 'Client',
-        'icon': Icons.person,
-      },
-    ];
+    TextEditingController categoryNameController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
+    ValueNotifier<String?> selectedClientNotifier =
+        ValueNotifier<String?>(null);
+    ValueNotifier<Uint8List?> selectedImageNotifier =
+        ValueNotifier<Uint8List?>(null);
+    ValueNotifier<String?> imageNameNotifier = ValueNotifier<String?>(null);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Get.back();
+            Navigator.of(context).pop();
           },
           icon: Icon(Icons.close),
         ),
@@ -43,7 +32,7 @@ class AddeTemplateScreen extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 46),
                 child: Column(
@@ -53,171 +42,39 @@ class AddeTemplateScreen extends StatelessWidget {
                     SizedBox(height: 20),
                     Text(
                       "Get started by adding a new template \nFor Your Clients",
-                      style: TextStyle(fontSize: screenHeight * 0.06),
+                      style: TextStyle(fontSize: screenHeight * 0.04),
                     ),
                     SizedBox(height: 20),
-                    DropdownButtonFormField<String>(
-                      value: selectedClient,
-                      decoration: InputDecoration(
-                        labelText: 'Select Someone',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      items: dropdownItems.map((item) {
-                        return DropdownMenuItem<String>(
-                          value: item['value'],
-                          child: Row(
-                            children: [
-                              Icon(item['icon']),
-                              SizedBox(width: 8),
-                              Text(item['text']),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (String? value) {
-                        selectedClient = value;
-                      },
-                    ),
+                    ClientDropdown(
+                        selectedClientNotifier: selectedClientNotifier),
                     SizedBox(height: 20),
-                    TextFormField(
+                    CustomTextField(
                       controller: categoryNameController,
-                      decoration: InputDecoration(
-                        labelText: 'Type a Category Name',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        prefixIcon: Icon(Icons.list_alt),
-                      ),
+                      labelText: 'Type a Category Name',
+                      icon: Icons.list_alt,
                     ),
                     SizedBox(height: 40),
-                    TextFormField(
+                    CustomTextField(
                       controller: descriptionController,
-                      decoration: InputDecoration(
-                        labelText: 'Description',
-                        alignLabelWithHint: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
+                      labelText: 'Description',
                       maxLines: 4,
+                      alignLabelWithHint: true,
                     ),
                     SizedBox(height: 40),
-                    BlocBuilder<VendorCategoryBloc, VendorCategoryState>(
-                      builder: (context, state) {
-                        if (state is ImagePickerLoading) {
-                          return CircularProgressIndicator();
-                        } else if (state is ImageSelected) {
-                          return Column(
-                            children: [
-                              Image.memory(
-                                state.imageBytes,
-                                fit: BoxFit.contain,
-                                width: screenWidth * 0.3,
-                                height: screenHeight * 0.3,
-                              ),
-                              SizedBox(height: 10),
-                              // Text('File name: ${state.imageName}'),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('File name: ${state.imageName}'),
-                                  SizedBox(width: 10),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      context
-                                          .read<VendorCategoryBloc>()
-                                          .add(PickImageEvent());
-                                    },
-                                    style: ButtonStyle(
-                                      side: WidgetStateProperty.all<BorderSide>(
-                                        BorderSide(
-                                            color: Colors.teal, width: 2.0),
-                                      ),
-                                      shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Change Image',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        } else if (state is ImagePickerError) {
-                          return Text(
-                            state.message,
-                            style: TextStyle(color: Colors.red),
-                          );
-                        }
-                        return Container(
-                          width: screenWidth * 0.3,
-                          height: screenHeight * 0.3,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: InkWell(
-                              onTap: () {
-                                context
-                                    .read<VendorCategoryBloc>()
-                                    .add(PickImageEvent());
-                              },
-                              child: Text(
-                                'Add Image\n+',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                    ImageSelector(
+                      screenWidth: screenWidth,
+                      screenHeight: screenHeight,
+                      selectedImageNotifier: selectedImageNotifier,
+                      imageNameNotifier: imageNameNotifier,
                     ),
                     SizedBox(height: 40),
-                    pushableButton_Widget(
-                        onPressed: () async {
-                          String id = randomAlphaNumeric(10);
-                          Map<String, dynamic> categoryFields = {
-                            'value': selectedClient,
-                            'categoryName': categoryNameController.text,
-                            'description': descriptionController.text,
-                          };
-                          // Getting the image path from state
-                          String imagePath = (context
-                                  .read<VendorCategoryBloc>()
-                                  .state as ImageSelected)
-                              .imageName;
-                          await DatabaseMethods()
-                              .addVendorCategoryDetail(
-                            categoryFields,
-                            id,
-                            'categories/$id/$imagePath',
-                          )
-                              .then((value) {
-                            categoryNameController.clear();
-                            descriptionController.clear();
-                            selectedClient = null;
-                            Fluttertoast.showToast(
-                              msg:
-                                  "The Category Details are added Successfully",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0,
-                            );
-                          });
-                        },
-                        text: 'Submit'),
+                    SubmitButton(
+                      categoryNameController: categoryNameController,
+                      descriptionController: descriptionController,
+                      selectedClientNotifier: selectedClientNotifier,
+                      selectedImageNotifier: selectedImageNotifier,
+                      imageNameNotifier: imageNameNotifier,
+                    ),
                     SizedBox(height: 60),
                   ],
                 ),
@@ -227,10 +84,10 @@ class AddeTemplateScreen extends StatelessWidget {
               flex: 1,
               child: Center(
                 child: Container(
-                    child: Lottie.asset(
-                  'assets/images/Animation - 1718084333468.json',
+                    child: Image.asset(
+                  'assets/images/all_projects_right_image.png',
                   width: screenWidth * 0.4,
-                  height: screenHeight * 0.5,
+                  height: screenHeight * 0.8,
                   fit: BoxFit.cover,
                 )),
               ),

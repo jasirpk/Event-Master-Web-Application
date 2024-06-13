@@ -1,9 +1,9 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/common/style.dart';
 import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
-import 'package:event_master_web/presentation_layer/components/image_card.dart';
-import 'package:event_master_web/presentation_layer/components/silver_appbar.dart';
-import 'package:event_master_web/presentation_layer/components/template_card.dart';
+import 'package:event_master_web/presentation_layer/components/ui/image_card.dart';
+import 'package:event_master_web/presentation_layer/components/ui/silver_appbar.dart';
+import 'package:event_master_web/presentation_layer/components/ui/template_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -16,10 +16,10 @@ class HomeScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return PreferredSize(
-      preferredSize: Size(screenWidth, screenHeight * 0.1),
-      child: Scaffold(
-        appBar: AppBar(
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size(screenWidth, screenHeight * 0.1),
+        child: AppBar(
           leading: ClipOval(
             child: Image.asset(
               'assets/images/Screenshot 2024-05-22 205021.png',
@@ -49,30 +49,28 @@ class HomeScreen extends StatelessWidget {
             sizedBoxWidth,
           ],
         ),
-        body: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is UnAuthenticated) {
-              Get.offAllNamed(RoutsClass.getLoginRout());
-            }
-          },
-          child: Stack(
-            children: [
-              _CustomScrollView(screenWidth, screenHeight),
-              // BottomSheetWidget(),
-            ],
-          ),
+      ),
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is UnAuthenticated) {
+            Get.offAllNamed(RoutsClass.getLoginRout());
+          }
+        },
+        child: CustomScrollViewWidget(
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
         ),
       ),
     );
   }
 }
 
-// Custom Scroll View
-class _CustomScrollView extends StatelessWidget {
+class CustomScrollViewWidget extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
 
-  _CustomScrollView(this.screenWidth, this.screenHeight);
+  CustomScrollViewWidget(
+      {required this.screenWidth, required this.screenHeight});
 
   @override
   Widget build(BuildContext context) {
