@@ -97,9 +97,6 @@ class TemplateCard extends StatelessWidget {
                                   return Center(
                                     child: Text(
                                       'Details not found',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
                                     ),
                                   );
                                 }

@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 
-class UserListScreen extends StatelessWidget {
+class EntrepreneurListScreen extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
   final String value;
 
-  UserListScreen(
+  EntrepreneurListScreen(
     this.screenWidth,
     this.screenHeight,
     this.value,
