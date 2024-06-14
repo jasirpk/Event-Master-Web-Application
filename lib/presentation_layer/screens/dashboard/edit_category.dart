@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/database.dart';
 import 'package:event_master_web/presentation_layer/components/auth/pushable_button.dart';
@@ -7,6 +8,7 @@ import 'package:event_master_web/presentation_layer/components/form/custom_textf
 import 'package:event_master_web/presentation_layer/components/form/drop_down.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class UpdateScreen extends StatelessWidget {
   final String id;
@@ -32,7 +34,7 @@ class UpdateScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.offAllNamed(RoutsClass.getHomeRout());
           },
           icon: Icon(Icons.close),
         ),

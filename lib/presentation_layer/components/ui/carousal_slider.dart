@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/database.dart';
-import 'package:event_master_web/presentation_layer/screens/dashboard/edit_category.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/read_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,9 +66,6 @@ class TemplateCard extends StatelessWidget {
                       child: Flexible(
                         child: Text(
                           'No Templates Found',
-                          style: TextStyle(
-                            color: Colors.white, // White text for consistency
-                          ),
                         ),
                       ),
                     );
@@ -112,14 +108,8 @@ class TemplateCard extends StatelessWidget {
 
                                 return InkWell(
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            CategoryDetailScreen(
-                                          categoryData: detailData,
-                                        ),
-                                      ),
-                                    );
+                                    Get.to(() => CategoryDetailScreen(
+                                        categoryData: detailData));
                                   },
                                   child: Flexible(
                                     child: Container(
@@ -137,6 +127,8 @@ class TemplateCard extends StatelessWidget {
                                       ),
                                       child: Container(
                                         decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           boxShadow: [
                                             BoxShadow(
                                                 color: Colors.black
@@ -167,11 +159,14 @@ class TemplateCard extends StatelessWidget {
                                               ),
                                               PopupMenuButton(
                                                 onSelected: (value) async {
-                                                  if (value == 'edit') {
-                                                    Get.to(() => UpdateScreen(
-                                                        id: documentId,
-                                                        categoryData:
-                                                            detailData));
+                                                  if (value == 'View Detail') {
+                                                    Get.to(
+                                                        () =>
+                                                            CategoryDetailScreen(
+                                                                categoryData:
+                                                                    detailData),
+                                                        transition: Transition
+                                                            .leftToRight);
                                                   } else if (value ==
                                                       'delete') {
                                                     await databaseMethods
@@ -185,12 +180,13 @@ class TemplateCard extends StatelessWidget {
                                                 itemBuilder: (context) {
                                                   return [
                                                     PopupMenuItem(
-                                                      child: Text('Edit'),
-                                                      value: 'edit',
-                                                    ),
-                                                    PopupMenuItem(
                                                       child: Text('Delete'),
                                                       value: 'delete',
+                                                    ),
+                                                    PopupMenuItem(
+                                                      child:
+                                                          Text('View Detail'),
+                                                      value: 'View Detail',
                                                     ),
                                                   ];
                                                 },
@@ -211,9 +207,9 @@ class TemplateCard extends StatelessWidget {
                             reverse: false,
                             viewportFraction: 0.55,
                             autoPlayCurve: Curves.fastOutSlowIn,
-                            // autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 3),
-                            autoPlayAnimationDuration: Duration(seconds: 1),
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 6),
+                            autoPlayAnimationDuration: Duration(seconds: 3),
                             enlargeCenterPage: true,
                             scrollDirection: Axis.horizontal,
                           ),
