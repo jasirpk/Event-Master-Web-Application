@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 class ClientDropdown extends StatelessWidget {
   final ValueNotifier<String?> selectedClientNotifier;
+  final String? InitialValue;
 
-  ClientDropdown({required this.selectedClientNotifier});
+  ClientDropdown({required this.selectedClientNotifier, this.InitialValue}) {
+    selectedClientNotifier.value = InitialValue;
+  }
 
   @override
   Widget build(BuildContext context) {

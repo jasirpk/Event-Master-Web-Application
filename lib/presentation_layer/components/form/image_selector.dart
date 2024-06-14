@@ -9,12 +9,17 @@ class ImageSelector extends StatelessWidget {
   final double screenHeight;
   final ValueNotifier<Uint8List?> selectedImageNotifier;
   final ValueNotifier<String?> imageNameNotifier;
+  final String? initialImageUrl;
 
-  ImageSelector(
-      {required this.screenWidth,
-      required this.screenHeight,
-      required this.selectedImageNotifier,
-      required this.imageNameNotifier});
+  ImageSelector({
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.selectedImageNotifier,
+    required this.imageNameNotifier,
+    this.initialImageUrl,
+  }) {
+    imageNameNotifier.value = initialImageUrl;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +65,56 @@ class ImageSelector extends StatelessWidget {
             ],
           );
         } else if (state is ImagePickerError) {
-          return Text(
-            state.message,
-            style: TextStyle(color: Colors.red),
+          return ElevatedButton(
+            onPressed: () {
+              context.read<VendorCategoryBloc>().add(PickImageEvent());
+            },
+            style: ButtonStyle(
+              side: WidgetStateProperty.all<BorderSide>(
+                BorderSide(color: Colors.teal, width: 2.0),
+              ),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+            child: Text('Change Image'),
+          );
+        } else if (initialImageUrl != null &&
+            selectedImageNotifier.value == null) {
+          // If there is an initial image URL and no image has been selected
+          return Column(
+            children: [
+              Image.network(
+                initialImageUrl!,
+                fit: BoxFit.contain,
+                width: screenWidth * 0.3,
+                height: screenHeight * 0.3,
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<VendorCategoryBloc>().add(PickImageEvent());
+                    },
+                    style: ButtonStyle(
+                      side: WidgetStateProperty.all<BorderSide>(
+                        BorderSide(color: Colors.teal, width: 2.0),
+                      ),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                    child: Text('Change Image'),
+                  ),
+                ],
+              ),
+            ],
           );
         }
         return Container(

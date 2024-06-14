@@ -36,7 +36,7 @@ class VendorCategoryBloc
           emit(ImagePickerError(message: 'Failed to get image bytes'));
         }
       } else {
-        emit(ImagePickerError(message: 'Image Not Selected'));
+        emit(ImagePickerError(message: 'Please Select the Image'));
       }
     } catch (e) {
       emit(ImagePickerError(message: 'Failed to pick image: $e'));

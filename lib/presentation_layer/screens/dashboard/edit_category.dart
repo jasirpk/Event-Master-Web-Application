@@ -1,12 +1,18 @@
 import 'dart:typed_data';
 
+import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
+import 'package:event_master_web/data_layer/services/database.dart';
+import 'package:event_master_web/presentation_layer/components/auth/pushable_button.dart';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/drop_down.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
-import 'package:event_master_web/presentation_layer/components/form/submit_button.dart';
 import 'package:flutter/material.dart';
 
-class AddeTemplateScreen extends StatelessWidget {
+class UpdateScreen extends StatelessWidget {
+  final String id;
+  final Map<String, dynamic> categoryData;
+
+  const UpdateScreen({super.key, required this.id, required this.categoryData});
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -18,6 +24,9 @@ class AddeTemplateScreen extends StatelessWidget {
     ValueNotifier<Uint8List?> selectedImageNotifier =
         ValueNotifier<Uint8List?>(null);
     ValueNotifier<String?> imageNameNotifier = ValueNotifier<String?>(null);
+
+    categoryNameController.text = categoryData['categoryName'] ?? '';
+    descriptionController.text = categoryData['description'] ?? '';
 
     return Scaffold(
       appBar: AppBar(
@@ -47,6 +56,7 @@ class AddeTemplateScreen extends StatelessWidget {
                     SizedBox(height: 20),
                     ClientDropdown(
                       selectedClientNotifier: selectedClientNotifier,
+                      InitialValue: categoryData['value'],
                     ),
                     SizedBox(height: 20),
                     CustomTextField(
@@ -67,15 +77,42 @@ class AddeTemplateScreen extends StatelessWidget {
                       screenHeight: screenHeight,
                       selectedImageNotifier: selectedImageNotifier,
                       imageNameNotifier: imageNameNotifier,
+                      initialImageUrl: categoryData['imagePath'],
                     ),
                     SizedBox(height: 40),
-                    SubmitButton(
-                      categoryNameController: categoryNameController,
-                      descriptionController: descriptionController,
-                      selectedClientNotifier: selectedClientNotifier,
-                      selectedImageNotifier: selectedImageNotifier,
-                      imageNameNotifier: imageNameNotifier,
-                    ),
+                    pushableButton_Widget(
+                        onPressed: () async {
+                          Map<String, dynamic> updatedData = {
+                            'categoryName': categoryNameController.text,
+                            'description': descriptionController.text,
+                            'value': selectedClientNotifier.value,
+                            'id': id,
+                            'imagePath': imageNameNotifier
+                          };
+
+                          if (selectedImageNotifier.value != null) {
+                            // New image was selected
+                            Uint8List imageBytes = selectedImageNotifier.value!;
+                            String imageName = imageNameNotifier.value ?? '';
+                            await DatabaseMethods().updateVendorCategoryDetail(
+                              id,
+                              updatedData,
+                              imageName,
+                              imageBytes,
+                            );
+                          } else {
+                            // No new image was selected
+                            await DatabaseMethods().updateVendorCategoryDetail(
+                              id,
+                              updatedData,
+                              '',
+                              Uint8List(0),
+                            );
+                          }
+                          showCustomSnackBar(
+                              'Success', 'Successfully Updated!');
+                        },
+                        text: 'Update'),
                     SizedBox(height: 60),
                   ],
                 ),

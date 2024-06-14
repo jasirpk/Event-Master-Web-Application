@@ -96,34 +96,19 @@ class DatabaseMethods {
     }
   }
 
-  // Future<List<QueryDocumentSnapshot<Object?>>> getVendorDetail(
-  //     String categoryId) async {
-  //   try {
-  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-  //         .collection('Categories')
-  //         .doc(categoryId)
-  //         .collection('Categories')
-  //         .get();
-  //     return querySnapshot.docs;
-  //   } catch (e) {
-  //     log('Error fetching vendor detail: $e');
-  //     rethrow;
-  //   }
-  // }
+  Future<DocumentSnapshot> getCategoryDetailById(String id) async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(id)
+          .get();
+      return docSnapshot;
+    } catch (e) {
+      log('Error fetching category detail by ID: $e');
+      rethrow;
+    }
+  }
 
-  // Future<List<QueryDocumentSnapshot>> getVendorDetail(String categoryId) async {
-  //   try {
-  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-  //         .collection('Categories')
-  //         .doc(categoryId)
-  //         .collection('Templates')
-  //         .get();
-  //     return querySnapshot.docs;
-  //   } catch (e) {
-  //     log('Error fetching vendor detail: $e');
-  //     rethrow;
-  //   }
-  // }
   Stream<QuerySnapshot> getVendorDetail() {
     return FirebaseFirestore.instance.collection('Categories').snapshots();
   }
