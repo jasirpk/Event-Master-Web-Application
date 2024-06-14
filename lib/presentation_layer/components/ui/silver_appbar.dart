@@ -59,11 +59,13 @@ class SilverStackAppBar extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  Text(
-                                    'Entrepreneur',
-                                    style: TextStyle(
-                                        fontSize: screenHeight * 0.06,
-                                        fontFamily: 'JacquesFracois'),
+                                  Flexible(
+                                    child: Text(
+                                      'Entrepreneur',
+                                      style: TextStyle(
+                                          fontSize: screenHeight * 0.06,
+                                          fontFamily: 'JacquesFracois'),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -103,11 +105,13 @@ class SilverStackAppBar extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      'User',
-                                      style: TextStyle(
-                                          fontSize: screenHeight * 0.06,
-                                          fontFamily: 'JacquesFracois'),
+                                    Flexible(
+                                      child: Text(
+                                        'User',
+                                        style: TextStyle(
+                                            fontSize: screenHeight * 0.06,
+                                            fontFamily: 'JacquesFracois'),
+                                      ),
                                     ),
                                   ],
                                 ),

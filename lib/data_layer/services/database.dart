@@ -47,6 +47,24 @@ class DatabaseMethods {
     }
   }
 
+// read...!
+
+  Future<DocumentSnapshot> getCategoryDetailById(String id) async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(id)
+          .get();
+      return docSnapshot;
+    } catch (e) {
+      log('Error fetching category detail by ID: $e');
+      rethrow;
+    }
+  }
+
+  Stream<QuerySnapshot> getVendorDetail() {
+    return FirebaseFirestore.instance.collection('Categories').snapshots();
+  }
   // Update...!
 
   Future<void> updateVendorCategoryDetail(
@@ -79,6 +97,19 @@ class DatabaseMethods {
     }
   }
 
+  // delete...!
+  Future<void> deleteVendorCategoryDeatail(String id) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(id)
+          .delete();
+      log('vendor category detail deleted Successfully');
+    } catch (e) {
+      log('Error deleting vendor category detail: $e');
+    }
+  }
+
   Future<String?> uploadImage(
       String id, String imageName, Uint8List imageBytes) async {
     try {
@@ -94,22 +125,5 @@ class DatabaseMethods {
       log('There is an error in image uploading: $e');
       return null;
     }
-  }
-
-  Future<DocumentSnapshot> getCategoryDetailById(String id) async {
-    try {
-      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-          .collection('Categories')
-          .doc(id)
-          .get();
-      return docSnapshot;
-    } catch (e) {
-      log('Error fetching category detail by ID: $e');
-      rethrow;
-    }
-  }
-
-  Stream<QuerySnapshot> getVendorDetail() {
-    return FirebaseFirestore.instance.collection('Categories').snapshots();
   }
 }

@@ -70,12 +70,16 @@ class CategoryDetailScreen extends StatelessWidget {
                 padding: EdgeInsets.only(left: 12, top: 12),
                 child: Row(
                   children: [
-                    Text(
-                      categoryData['description'],
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: screenHeight * 0.022,
-                          letterSpacing: 2),
+                    Flexible(
+                      child: Text(
+                        categoryData['description'],
+                        maxLines: 10,
+                        // softWrap: true,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: screenHeight * 0.022,
+                            letterSpacing: 2),
+                      ),
                     )
                   ],
                 ),
