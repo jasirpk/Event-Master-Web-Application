@@ -18,6 +18,8 @@ class SubmitButton extends StatelessWidget {
     required this.selectedClientNotifier,
     required this.selectedImageNotifier,
     required this.imageNameNotifier,
+    String? categoryId,
+    bool? isEditing,
   });
 
   @override

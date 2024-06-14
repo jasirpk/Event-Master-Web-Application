@@ -4,29 +4,78 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+// ..............................CRUD Operations.......................!
+
+// Create...!
+
 class DatabaseMethods {
   Future<void> addVendorCategoryDetail(Map<String, dynamic> categoryDetails,
-      String id, String imageName, Uint8List imageBytes) async {
+      String id, String imageName, Uint8List imageBytes,
+      {bool isEditing = false}) async {
     try {
-      // Upload image to Firebase Storage
-      String? imagePath = await uploadImage(id, imageName, imageBytes);
+      // Check if the document already exists
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(id)
+          .get();
 
-      if (imagePath != null) {
-        // Add image path to category details
-        categoryDetails['imagePath'] = imagePath;
-
-        // Add category details to Firestore
-        await FirebaseFirestore.instance
-            .collection('Categories')
-            .doc(id)
-            .set(categoryDetails);
-
-        log('Vendor category detail added successfully.');
+      if (docSnapshot.exists && isEditing) {
+        // Update existing document
+        await updateVendorCategoryDetail(
+            id, categoryDetails, imageName, imageBytes);
       } else {
-        log('Failed to upload image. Category detail not added.');
+        // Upload image to Firebase Storage
+        String? imagePath = await uploadImage(id, imageName, imageBytes);
+
+        if (imagePath != null) {
+          // Add image path to category details
+          categoryDetails['imagePath'] = imagePath;
+
+          // Add or update category details in Firestore
+          await FirebaseFirestore.instance
+              .collection('Categories')
+              .doc(id)
+              .set(categoryDetails);
+
+          log('Vendor category detail ${isEditing ? 'updated' : 'added'} successfully.');
+        } else {
+          log('Failed to upload image. Category detail not ${isEditing ? 'updated' : 'added'}.');
+        }
       }
     } catch (e) {
-      log('Error adding vendor category detail: $e');
+      log('Error ${isEditing ? 'updating' : 'adding'} vendor category detail: $e');
+    }
+  }
+
+  // Update...!
+
+  Future<void> updateVendorCategoryDetail(
+      String id,
+      Map<String, dynamic> categoryDetails,
+      String imageName,
+      Uint8List imageBytes) async {
+    try {
+      // Check if image needs to be updated
+      if (imageName.isNotEmpty && imageBytes.isNotEmpty) {
+        // Upload new image to Firebase Storage
+        String? imagePath = await uploadImage(id, imageName, imageBytes);
+        if (imagePath != null) {
+          // Update image path in category details
+          categoryDetails['imagePath'] = imagePath;
+        } else {
+          log('Failed to upload new image. Image not updated.');
+        }
+      }
+
+      // Update category details in Firestore
+      await FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(id)
+          .update(categoryDetails);
+
+      log('Vendor category detail updated successfully.');
+    } catch (e) {
+      log('Error updating vendor category detail: $e');
     }
   }
 
@@ -47,6 +96,34 @@ class DatabaseMethods {
     }
   }
 
+  // Future<List<QueryDocumentSnapshot<Object?>>> getVendorDetail(
+  //     String categoryId) async {
+  //   try {
+  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //         .collection('Categories')
+  //         .doc(categoryId)
+  //         .collection('Categories')
+  //         .get();
+  //     return querySnapshot.docs;
+  //   } catch (e) {
+  //     log('Error fetching vendor detail: $e');
+  //     rethrow;
+  //   }
+  // }
+
+  // Future<List<QueryDocumentSnapshot>> getVendorDetail(String categoryId) async {
+  //   try {
+  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //         .collection('Categories')
+  //         .doc(categoryId)
+  //         .collection('Templates')
+  //         .get();
+  //     return querySnapshot.docs;
+  //   } catch (e) {
+  //     log('Error fetching vendor detail: $e');
+  //     rethrow;
+  //   }
+  // }
   Stream<QuerySnapshot> getVendorDetail() {
     return FirebaseFirestore.instance.collection('Categories').snapshots();
   }

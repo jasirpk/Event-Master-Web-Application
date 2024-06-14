@@ -1,9 +1,9 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/common/style.dart';
 import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
+import 'package:event_master_web/presentation_layer/components/ui/carousal_slider.dart';
 import 'package:event_master_web/presentation_layer/components/ui/image_card.dart';
 import 'package:event_master_web/presentation_layer/components/ui/silver_appbar.dart';
-import 'package:event_master_web/presentation_layer/components/ui/template_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';

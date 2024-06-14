@@ -9,9 +9,12 @@ class TemplateCard extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
 
-  TemplateCard(this.screenWidth, this.screenHeight);
+  TemplateCard(
+    this.screenWidth,
+    this.screenHeight,
+  );
 
-  final DatabaseMethods _databaseMethods = DatabaseMethods();
+  final DatabaseMethods databaseMethods = DatabaseMethods();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,7 @@ class TemplateCard extends StatelessWidget {
             SizedBox(height: 16),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: _databaseMethods.getVendorDetail(),
+                stream: databaseMethods.getVendorDetail(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
@@ -96,12 +99,15 @@ class TemplateCard extends StatelessWidget {
                                         color: Colors.black.withOpacity(0.3)),
                                   ],
                                 ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 8, top: 8),
-                                      child: Text(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 8, top: 8),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
                                         data['categoryName'] ?? 'No Name',
                                         maxLines: 2,
                                         style: TextStyle(
@@ -110,8 +116,28 @@ class TemplateCard extends StatelessWidget {
                                           letterSpacing: 1,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      PopupMenuButton(
+                                        onSelected: (value) {
+                                          if (value == 'edit') {
+                                            Get.toNamed(
+                                                RoutsClass.getEditCategory());
+                                          } else if (value == 'delete') {}
+                                        },
+                                        itemBuilder: (context) {
+                                          return [
+                                            PopupMenuItem(
+                                              child: Text('Edit'),
+                                              value: 'edit',
+                                            ),
+                                            PopupMenuItem(
+                                              child: Text('Delete'),
+                                              value: 'delete',
+                                            )
+                                          ];
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
