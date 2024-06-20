@@ -135,7 +135,8 @@ class CategoryDetailScreen extends StatelessWidget {
                   padding: EdgeInsets.all(12.0),
                   child: Text(
                     categoryData['description'],
-                    style: TextStyle(
+                    style: TextStyle( 
+                      textBaseline: TextBaseline.ideographic,
                       fontWeight: FontWeight.w300,
                       fontSize: screenHeight * 0.022,
                       letterSpacing: 1,

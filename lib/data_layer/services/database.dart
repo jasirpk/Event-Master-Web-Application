@@ -73,19 +73,14 @@ class DatabaseMethods {
       String imageName,
       Uint8List imageBytes) async {
     try {
-      // Check if image needs to be updated
       if (imageName.isNotEmpty && imageBytes.isNotEmpty) {
-        // Upload new image to Firebase Storage
         String? imagePath = await uploadImage(id, imageName, imageBytes);
         if (imagePath != null) {
-          // Update image path in category details
           categoryDetails['imagePath'] = imagePath;
         } else {
           log('Failed to upload new image. Image not updated.');
         }
       }
-
-      // Update category details in Firestore
       await FirebaseFirestore.instance
           .collection('Categories')
           .doc(id)

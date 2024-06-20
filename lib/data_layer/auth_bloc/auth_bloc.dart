@@ -106,7 +106,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         print('User NOt found in FirebaseAuth');
         emit(UnAuthenticated());
-        // Get.offAllNamed(RoutsClass.getSplashRoute());
+        Get.offAllNamed(RoutsClass.getSplashRoute());
         final user = auth.currentUser;
 
         if (user != null) {
@@ -116,7 +116,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           emit(UnAuthenticated());
           print('User Not found in FirebaseAuth');
-          // Get.offAllNamed(RoutsClass.getSplashRoute());
+          Get.offAllNamed(RoutsClass.getSplashRoute());
         }
       }
     });
