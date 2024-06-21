@@ -1,6 +1,6 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
-import 'package:event_master_web/presentation_layer/components/ui/carousal_slider.dart';
+import 'package:event_master_web/presentation_layer/components/ui/template_carousal.dart';
 import 'package:event_master_web/presentation_layer/components/ui/custom_appbar.dart';
 import 'package:event_master_web/presentation_layer/components/ui/image_card.dart';
 import 'package:event_master_web/presentation_layer/components/ui/silver_appbar.dart';
@@ -43,46 +43,50 @@ class CustomScrollViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SilverStackAppBar(
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
-        ),
-        SliverToBoxAdapter(child: SizedBox(height: 20)),
-        SliverToBoxAdapter(
-          child: Center(
-            child: Container(
-              width: screenWidth * 0.8,
-              child: Divider(
-                thickness: 1,
-                color: Colors.grey,
+    return SingleChildScrollView(
+      child: CustomScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        slivers: [
+          SilverStackAppBar(
+            screenWidth: screenWidth,
+            screenHeight: screenHeight,
+          ),
+          SliverToBoxAdapter(child: SizedBox(height: 20)),
+          SliverToBoxAdapter(
+            child: Center(
+              child: Container(
+                width: screenWidth * 0.8,
+                child: Divider(
+                  thickness: 1,
+                  color: Colors.grey,
+                ),
               ),
             ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: TemplateCard(
+                        screenWidth,
+                        screenHeight,
+                      )),
+                  SizedBox(width: 16),
+                  Expanded(
                     flex: 1,
-                    child: TemplateCard(
-                      screenWidth,
-                      screenHeight,
-                    )),
-                SizedBox(width: 16),
-                Expanded(
-                  flex: 1,
-                  child: ImageCard(screenWidth, screenHeight),
-                ),
-              ],
+                    child: ImageCard(screenWidth, screenHeight),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        SliverToBoxAdapter(child: SizedBox(height: 20)),
-      ],
+          SliverToBoxAdapter(child: SizedBox(height: 20)),
+        ],
+      ),
     );
   }
 }

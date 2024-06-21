@@ -140,7 +140,7 @@ class SilverStackAppBar extends StatelessWidget {
                                           child: CircleAvatar(
                                             maxRadius: screenHeight * 0.06,
                                             backgroundImage: AssetImage(
-                                              'assets/images/Circle-icons-profile.svg.png',
+                                              'assets/images/clint_login_background.png',
                                             ),
                                           ),
                                         ),
