@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
-import 'package:event_master_web/data_layer/services/database.dart';
+import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/components/ui/carousal.dart';
 import 'package:event_master_web/presentation_layer/components/ui/shimmer.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class TemplateCard extends StatelessWidget {
     return Container(
       height: 360,
       decoration: BoxDecoration(
-        color: const Color(0xFF263238), // Dark theme background color
+        color: Color(0xFF263238), // Dark theme background color
         borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(

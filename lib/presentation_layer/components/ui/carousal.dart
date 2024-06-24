@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
-import 'package:event_master_web/data_layer/services/database.dart';
+import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/components/ui/shimmer.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/read_category.dart';
 import 'package:flutter/material.dart';
@@ -52,72 +52,70 @@ class CarousalSliderWidget extends StatelessWidget {
               onTap: () {
                 Get.to(() => CategoryDetailScreen(categoryData: detailData));
               },
-              child: Flexible(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF37474F),
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: imagePath.startsWith('http')
+                        ? NetworkImage(imagePath)
+                        : AssetImage(imagePath) as ImageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                  border: Border.all(color: Colors.teal),
+                ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF37474F),
                     borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: imagePath.startsWith('http')
-                          ? NetworkImage(imagePath)
-                          : AssetImage(imagePath) as ImageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                    border: Border.all(color: Colors.teal),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black.withOpacity(0.3)),
+                    ],
                   ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.3)),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 8, top: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              detailData['categoryName'] ?? 'No Name',
-                              maxLines: 2,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: screenHeight * 0.028,
-                                letterSpacing: 1,
-                              ),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 8, top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            detailData['categoryName'] ?? 'No Name',
+                            maxLines: 2,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenHeight * 0.028,
+                              letterSpacing: 1,
                             ),
                           ),
-                          PopupMenuButton(
-                            onSelected: (value) async {
-                              if (value == 'View Detail') {
-                                Get.to(
-                                    () => CategoryDetailScreen(
-                                        categoryData: detailData),
-                                    transition: Transition.leftToRight);
-                              } else if (value == 'delete') {
-                                await databaseMethods
-                                    .deleteVendorCategoryDeatail(documentId);
-                                showCustomSnackBar('Deleted ⚠ ',
-                                    'category deleted Successfully!');
-                              }
-                            },
-                            itemBuilder: (context) {
-                              return [
-                                PopupMenuItem(
-                                  child: Text('Delete'),
-                                  value: 'delete',
-                                ),
-                                PopupMenuItem(
-                                  child: Text('View Detail'),
-                                  value: 'View Detail',
-                                ),
-                              ];
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                        PopupMenuButton(
+                          onSelected: (value) async {
+                            if (value == 'View Detail') {
+                              Get.to(
+                                  () => CategoryDetailScreen(
+                                      categoryData: detailData),
+                                  transition: Transition.leftToRight);
+                            } else if (value == 'delete') {
+                              await databaseMethods
+                                  .deleteVendorCategoryDeatail(documentId);
+                              showCustomSnackBar('Deleted ⚠ ',
+                                  'category deleted Successfully!');
+                            }
+                          },
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                child: Text('Delete'),
+                                value: 'delete',
+                              ),
+                              PopupMenuItem(
+                                child: Text('View Detail'),
+                                value: 'View Detail',
+                              ),
+                            ];
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),

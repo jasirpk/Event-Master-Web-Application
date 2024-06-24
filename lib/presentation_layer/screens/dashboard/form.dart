@@ -1,12 +1,16 @@
 import 'dart:typed_data';
-
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/drop_down.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
 import 'package:event_master_web/presentation_layer/components/form/submit_button.dart';
 import 'package:flutter/material.dart';
 
-class AddeTemplateScreen extends StatelessWidget {
+class AddeTemplateScreen extends StatefulWidget {
+  @override
+  State<AddeTemplateScreen> createState() => _AddeTemplateScreenState();
+}
+
+class _AddeTemplateScreenState extends State<AddeTemplateScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -67,6 +71,7 @@ class AddeTemplateScreen extends StatelessWidget {
                       screenHeight: screenHeight,
                       selectedImageNotifier: selectedImageNotifier,
                       imageNameNotifier: imageNameNotifier,
+                      initialImageUrl: 'assets/images/background_demo_img.png',
                     ),
                     SizedBox(height: 40),
                     SubmitButton(

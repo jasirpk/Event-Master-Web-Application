@@ -17,9 +17,7 @@ class ImageSelector extends StatelessWidget {
     required this.selectedImageNotifier,
     required this.imageNameNotifier,
     this.initialImageUrl,
-  }) {
-    imageNameNotifier.value = initialImageUrl;
-  }
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,40 +28,6 @@ class ImageSelector extends StatelessWidget {
         } else if (state is ImageSelected) {
           selectedImageNotifier.value = state.imageBytes;
           imageNameNotifier.value = state.imageName;
-          return Column(
-            children: [
-              Image.memory(
-                state.imageBytes,
-                fit: BoxFit.contain,
-                width: screenWidth * 0.3,
-                height: screenHeight * 0.3,
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('File name: ${state.imageName}'),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<VendorCategoryBloc>().add(PickImageEvent());
-                    },
-                    style: ButtonStyle(
-                      side: WidgetStateProperty.all<BorderSide>(
-                        BorderSide(color: Colors.teal, width: 2.0),
-                      ),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                    child: Text('Change Image'),
-                  ),
-                ],
-              ),
-            ],
-          );
         } else if (state is ImagePickerError) {
           return ElevatedButton(
             onPressed: () {
@@ -81,61 +45,63 @@ class ImageSelector extends StatelessWidget {
             ),
             child: Text('Change Image'),
           );
-        } else if (initialImageUrl != null &&
-            selectedImageNotifier.value == null) {
-          // If there is an initial image URL and no image has been selected
-          return Column(
-            children: [
-              Image.network(
-                initialImageUrl!,
-                fit: BoxFit.contain,
-                width: screenWidth * 0.3,
-                height: screenHeight * 0.3,
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<VendorCategoryBloc>().add(PickImageEvent());
-                    },
-                    style: ButtonStyle(
-                      side: WidgetStateProperty.all<BorderSide>(
-                        BorderSide(color: Colors.teal, width: 2.0),
-                      ),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
+        }
+
+        return ValueListenableBuilder<Uint8List?>(
+          valueListenable: selectedImageNotifier,
+          builder: (context, imageBytes, child) {
+            return Column(
+              children: [
+                imageBytes != null
+                    ? Image.memory(
+                        imageBytes,
+                        fit: BoxFit.contain,
+                        width: screenWidth * 0.3,
+                        height: screenHeight * 0.3,
+                      )
+                    : initialImageUrl != null
+                        ? Image.network(
+                            initialImageUrl!,
+                            fit: BoxFit.cover,
+                            width: screenWidth * 0.3,
+                            height: screenHeight * 0.3,
+                          )
+                        : Container(
+                            width: screenWidth * 0.3,
+                            height: screenHeight * 0.3,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                SizedBox(height: 10),
+                if (imageNameNotifier.value != null)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('File name: ${imageNameNotifier.value}'),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<VendorCategoryBloc>().add(PickImageEvent());
+                  },
+                  style: ButtonStyle(
+                    side: WidgetStateProperty.all<BorderSide>(
+                      BorderSide(color: Colors.teal, width: 2.0),
+                    ),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    child: Text('Change Image'),
                   ),
-                ],
-              ),
-            ],
-          );
-        }
-        return Container(
-          width: screenWidth * 0.3,
-          height: screenHeight * 0.3,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-            child: InkWell(
-              onTap: () {
-                context.read<VendorCategoryBloc>().add(PickImageEvent());
-              },
-              child: Text(
-                'Add Image\n+',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-          ),
+                  child: Text('Pick Image'),
+                ),
+              ],
+            );
+          },
         );
       },
     );

@@ -1,4 +1,3 @@
-import 'package:event_master_web/presentation_layer/components/form/edit_category.dart';
 import 'package:event_master_web/presentation_layer/screens/auth/get_started.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/form.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/home.dart';
@@ -12,14 +11,12 @@ class RoutsClass {
   static String login = '/login';
   static String home = '/home';
   static String form = '/form';
-  static String edit = '/edit/:categoryId';
 
   static String getSplashRoute() => getStarted;
   static String getSignUpRoute() => signuP;
   static String getLoginRout() => login;
   static String getHomeRout() => home;
   static String getFormRout() => form;
-  static String getEditCategory() => edit;
 
   static List<GetPage> routes = [
     GetPage(name: getStarted, page: () => GetStartedScreen()),
@@ -43,11 +40,5 @@ class RoutsClass {
       page: () => AddeTemplateScreen(),
       transition: Transition.rightToLeft,
     ),
-    GetPage(
-        name: edit,
-        page: () {
-          final categoryId = Get.parameters['categoryId']!;
-          return EditCategoryScreen(categoryId: categoryId);
-        }),
   ];
 }

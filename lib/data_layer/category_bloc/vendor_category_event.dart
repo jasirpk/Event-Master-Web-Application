@@ -10,5 +10,6 @@ class UploadImageEvent extends VendorCategoryEvent {
   final String imageName;
   final Uint8List imageBytes;
 
-  UploadImageEvent(this.id, this.imageName, this.imageBytes);
+  UploadImageEvent(
+      {required this.id, required this.imageName, required this.imageBytes});
 }

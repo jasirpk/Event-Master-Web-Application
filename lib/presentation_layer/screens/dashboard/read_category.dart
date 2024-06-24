@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
-import 'package:event_master_web/presentation_layer/screens/dashboard/edit_category.dart';
-import 'package:event_master_web/data_layer/services/database.dart';
+import 'package:event_master_web/common/style.dart';
+import 'package:event_master_web/presentation_layer/components/ui/category_detail.dart';
+import 'package:event_master_web/data_layer/services/category.dart';
+import 'package:event_master_web/presentation_layer/components/ui/sub_category_widget.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/add_sub_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,72 +36,11 @@ class CategoryDetailScreen extends StatelessWidget {
           var documentId = categoryData['id'];
           return CustomScrollView(
             slivers: [
-              SliverAppBar(
-                expandedHeight: screenHeight * 0.6,
-                flexibleSpace: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(categoryData['imagePath']),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                            Colors.black.withOpacity(0.1),
-                            BlendMode.color,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 4,
-                      right: 4,
-                      child: PopupMenuButton(
-                        onSelected: (value) async {
-                          if (value == 'edit') {
-                            Get.to(() => UpdateScreen(
-                                  id: documentId,
-                                  categoryData: categoryData,
-                                ));
-                          } else if (value == 'delete') {
-                            await databaseMethods
-                                .deleteVendorCategoryDeatail(documentId);
-                            Get.back();
-                            showCustomSnackBar(
-                                'Deleted ⚠ ', 'category deleted Successfully!');
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            child: Text('Edit'),
-                            value: 'edit',
-                          ),
-                          PopupMenuItem(
-                            child: Text('Delete'),
-                            value: 'delete',
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 20,
-                      left: 20,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            categoryData['categoryName'],
-                            style: TextStyle(
-                              fontFamily: 'JacquesFracois',
-                              fontSize: screenHeight * 0.06,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              CategoryDetailWidget(
+                screenHeight: screenHeight,
+                categoryData: categoryData,
+                documentId: documentId,
+                databaseMethods: databaseMethods,
               ),
               SliverToBoxAdapter(
                 child: SizedBox(height: 20),
@@ -135,7 +76,7 @@ class CategoryDetailScreen extends StatelessWidget {
                   padding: EdgeInsets.all(12.0),
                   child: Text(
                     categoryData['description'],
-                    style: TextStyle( 
+                    style: TextStyle(
                       textBaseline: TextBaseline.ideographic,
                       fontWeight: FontWeight.w300,
                       fontSize: screenHeight * 0.022,
@@ -144,6 +85,66 @@ class CategoryDetailScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Available Sub-Templates',
+                        style: TextStyle(
+                          fontSize: screenHeight * 0.026,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Get.to(
+                              () => AddSubCategoryScreen(
+                                    categoryId: documentId,
+                                  ),
+                              transition: Transition.fade,
+                              duration: Duration(milliseconds: 800));
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: myColor),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Add Templates',
+                                  style: TextStyle(
+                                    fontSize: screenHeight * 0.022,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                Icon(Icons.add)
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: 20),
+              ),
+              SliverToBoxAdapter(
+                child: SubCategoryWidget(
+                  templateId: documentId,
+                ),
+              )
             ],
           );
         },
