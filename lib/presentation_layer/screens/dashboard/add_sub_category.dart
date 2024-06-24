@@ -1,10 +1,8 @@
 import 'dart:typed_data';
-import 'package:event_master_web/data_layer/services/sub_category.dart';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
+import 'package:event_master_web/presentation_layer/components/form/sub_category_submit_button.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:random_string/random_string.dart';
 
 class AddSubCategoryScreen extends StatelessWidget {
   final String categoryId;
@@ -70,73 +68,14 @@ class AddSubCategoryScreen extends StatelessWidget {
                       initialImageUrl: 'assets/images/background_demo_img.png',
                     ),
                     SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (selectedImageNotifier.value != null &&
-                            subCategoryNameController.text.isNotEmpty &&
-                            descriptionController.text.isNotEmpty) {
-                          String? image = imageNameNotifier.value;
-                          Uint8List? imageBytes = selectedImageNotifier.value;
-                          String id = subCategoryId ?? randomAlphaNumeric(10);
-                          Map<String, dynamic> subCategoryFields = {
-                            'subCategoryName': subCategoryNameController.text,
-                            'about': descriptionController.text,
-                            'image': image,
-                            'id': id,
-                          };
-
-                          if (image != null && imageBytes != null) {
-                            try {
-                              await SubDatabaseMethods()
-                                  .addSubCategory(
-                                categoryId,
-                                id,
-                                subCategoryFields,
-                                imageBytes,
-                                isEditing: isEditing ?? false,
-                              )
-                                  .then((value) {
-                                print(
-                                    'The sub categories are added successfully');
-                                Fluttertoast.showToast(
-                                  msg:
-                                      'The sub-category details are ${isEditing == true ? 'updated' : 'added'} successfully',
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  backgroundColor: Colors.green,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
-                                // Clear form fields and notifiers
-                                subCategoryNameController.clear();
-                                descriptionController.clear();
-                                selectedImageNotifier.value = null;
-                                imageNameNotifier.value = null;
-                              });
-                            } catch (e) {
-                              Fluttertoast.showToast(
-                                msg: "Error: $e",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                            }
-                          }
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: "Please fill all the fields",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
-                        }
-                      },
-                      child: Text('Submit'),
-                    ),
+                    subCategorySubmitButton(
+                        selectedImageNotifier: selectedImageNotifier,
+                        subCategoryNameController: subCategoryNameController,
+                        descriptionController: descriptionController,
+                        imageNameNotifier: imageNameNotifier,
+                        subCategoryId: subCategoryId,
+                        categoryId: categoryId,
+                        isEditing: isEditing),
                     SizedBox(height: 60),
                   ],
                 ),

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/drop_down.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
-import 'package:event_master_web/presentation_layer/components/form/submit_button.dart';
+import 'package:event_master_web/presentation_layer/components/form/category_submit_b.dart';
 import 'package:flutter/material.dart';
 
 class AddeTemplateScreen extends StatefulWidget {

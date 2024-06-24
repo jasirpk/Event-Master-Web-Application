@@ -116,13 +116,14 @@ class CategoryDetailScreen extends StatelessWidget {
                               border: Border.all(color: myColor),
                               borderRadius: BorderRadius.circular(30)),
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
                             child: Row(
                               children: [
                                 Text(
                                   'Add Templates',
                                   style: TextStyle(
-                                    fontSize: screenHeight * 0.022,
+                                    fontSize: screenHeight * 0.018,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1,
                                   ),
