@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/common/style.dart';
-import 'package:event_master_web/presentation_layer/components/ui/category_detail.dart';
+import 'package:event_master_web/presentation_layer/components/form/category_detail.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
-import 'package:event_master_web/presentation_layer/components/ui/sub_category_widget.dart';
-import 'package:event_master_web/presentation_layer/screens/dashboard/add_sub_category.dart';
+import 'package:event_master_web/presentation_layer/components/form/sub_category_widget.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/sub_category/sub_category_form.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

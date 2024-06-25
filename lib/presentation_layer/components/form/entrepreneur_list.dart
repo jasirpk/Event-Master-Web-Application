@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/components/ui/shimmer.dart';
-import 'package:event_master_web/presentation_layer/screens/dashboard/read_category.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/category/read_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';

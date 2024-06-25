@@ -1,6 +1,6 @@
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
-import 'package:event_master_web/presentation_layer/screens/dashboard/edit_category.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/category/edit_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

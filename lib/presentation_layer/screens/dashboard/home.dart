@@ -1,6 +1,6 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
-import 'package:event_master_web/presentation_layer/components/ui/template_carousal.dart';
+import 'package:event_master_web/presentation_layer/components/form/template_carousal.dart';
 import 'package:event_master_web/presentation_layer/components/ui/custom_appbar.dart';
 import 'package:event_master_web/presentation_layer/components/ui/image_card.dart';
 import 'package:event_master_web/presentation_layer/components/ui/silver_appbar.dart';

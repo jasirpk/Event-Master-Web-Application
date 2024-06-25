@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/sub_category.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/sub_category/edit_sub_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,7 +52,10 @@ class SubCategoryDetailScreen extends StatelessWidget {
                         child: PopupMenuButton(
                           onSelected: (value) async {
                             if (value == 'edit') {
-                              // Navigate to edit screen
+                              Get.to(() => EditSubCategoryScreen(
+                                  categoryId: categoryId,
+                                  subCategoryId: subCategoryData['id'],
+                                  subCategoryData: subCategoryData));
                             } else if (value == 'delete') {
                               await subDatabaseMethods.deleteSubCategory(
                                   categoryId, subCategoryData['id']);

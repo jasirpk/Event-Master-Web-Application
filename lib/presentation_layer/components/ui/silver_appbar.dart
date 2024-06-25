@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
-import 'package:event_master_web/presentation_layer/screens/dashboard/entrepreneur_list.dart';
-import 'package:event_master_web/presentation_layer/screens/dashboard/user_list.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/category/entrepreneur_list.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/category/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
