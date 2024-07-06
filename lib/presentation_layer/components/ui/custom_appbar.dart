@@ -1,7 +1,9 @@
 import 'package:event_master_web/common/style.dart';
 import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/entrepreneurs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class CusotmAppBar extends StatelessWidget {
   const CusotmAppBar({
@@ -27,6 +29,17 @@ class CusotmAppBar extends StatelessWidget {
         ),
       ),
       actions: [
+        ElevatedButton(
+            onPressed: () {
+              Get.to(() => EntrepreneursListScreen());
+            },
+            style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll<Color>(myColor)),
+            child: Text(
+              'CheckList',
+              style: TextStyle(color: Colors.black),
+            )),
+        sizedBoxWidth,
         IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),
         sizedBoxWidth,
         IconButton(onPressed: () {}, icon: Icon(Icons.message)),

@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
-import 'package:event_master_web/presentation_layer/components/ui/shimmer.dart';
+import 'package:event_master_web/presentation_layer/components/shimmer/carousal.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/category/read_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,7 +35,7 @@ class CarousalSliderWidget extends StatelessWidget {
           future: databaseMethods.getCategoryDetailById(documentId),
           builder: (context, detailSnapshot) {
             if (detailSnapshot.connectionState == ConnectionState.waiting) {
-              return ShimmerLoadingCard(
+              return ShimmerCarouselItem(
                   screenWidth: screenWidth, screenHeight: screenHeight);
             }
             if (!detailSnapshot.hasData) {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/components/form/carousal.dart';
-import 'package:event_master_web/presentation_layer/components/ui/shimmer.dart';
+import 'package:event_master_web/presentation_layer/components/shimmer/carousal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -56,7 +56,7 @@ class TemplateCard extends StatelessWidget {
                 stream: databaseMethods.getVendorDetail(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return ShimmerLoadingEffect(
+                    return ShimmerCarouselItem(
                         screenWidth: screenWidth, screenHeight: screenHeight);
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
