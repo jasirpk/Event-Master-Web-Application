@@ -43,7 +43,6 @@ class subCategorySubmitButton extends StatelessWidget {
               'about': descriptionController.text,
               'image': image,
               'id': id,
-              'isFavorite': isFavorite
             };
 
             if (image != null && imageBytes != null) {
