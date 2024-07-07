@@ -175,12 +175,8 @@ class BuildRequestWidget extends StatelessWidget {
                               PopupMenuButton(
                                 onSelected: (value) async {
                                   if (value == 'View Detail') {
-                                    // View Detail action
                                   } else if (value == 'delete') {
-                                    // Delete action
-                                  } else if (value == 'update') {
-                                    // Update action
-                                  }
+                                  } else if (value == 'update') {}
                                 },
                                 itemBuilder: (context) {
                                   return [

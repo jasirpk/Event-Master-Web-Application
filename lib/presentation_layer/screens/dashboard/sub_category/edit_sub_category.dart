@@ -1,13 +1,10 @@
 import 'dart:typed_data';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
-import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/sub_category.dart';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:developer';
 
 class EditSubCategoryScreen extends StatefulWidget {
   final String categoryId;
@@ -48,24 +45,6 @@ class _EditSubCategoryScreenState extends State<EditSubCategoryScreen> {
     selectedImageNotifier.dispose();
     imageNameNotifier.dispose();
     super.dispose();
-  }
-
-  Future<void> updateSubCategory(String categoryId, String subCategoryId,
-      Map<String, dynamic> subCategoryDetails) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('Categories')
-          .doc(categoryId)
-          .collection('SubCategories')
-          .doc(subCategoryId)
-          .update(subCategoryDetails);
-      showCustomSnackBar('Success', 'Sub-category updated successfully.');
-      log('Sub-category updated successfully.');
-    } catch (e) {
-      log('Error updating sub-category detail: $e');
-      showCustomSnackBar(
-          'Error', 'Failed to update sub-category details. Please try again.');
-    }
   }
 
   @override
@@ -145,9 +124,10 @@ class _EditSubCategoryScreenState extends State<EditSubCategoryScreen> {
                             'about': descriptionController.text,
                             'imagePath': newImagePath,
                           };
-
-                          await updateSubCategory(widget.categoryId,
-                              widget.subCategoryId, subCategoryFields);
+                          await SubDatabaseMethods().updateSubCategory(
+                              widget.categoryId,
+                              widget.subCategoryId,
+                              subCategoryFields);
                         },
                       ),
                     ),

@@ -85,7 +85,7 @@ class VendorRequest {
           .doc(documentId)
           .update({'isRejected': isRejected, 'isAccepted': isAccepted});
 
-      print('isAccepted field updated successfully.');
+      print('isRejected field updated successfully.');
     } catch (e) {
       log('Error updating isValid field: $e');
       throw Exception('Failed to update isValid field: $e');
