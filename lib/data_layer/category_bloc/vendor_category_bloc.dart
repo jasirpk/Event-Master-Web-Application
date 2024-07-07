@@ -16,6 +16,7 @@ class VendorCategoryBloc
   VendorCategoryBloc() : super(VendorCategoryInitial()) {
     on<PickImageEvent>(_onPickImageEvent);
     on<UploadImageEvent>(uploadImageEvent);
+    on<ClearImageEvent>(clearImages);
   }
 
   Future<void> _onPickImageEvent(
@@ -53,5 +54,10 @@ class VendorCategoryBloc
     } catch (e) {
       emit(ImageUploadError(message: 'Failed to Uploade image $e'));
     }
+  }
+
+  FutureOr<void> clearImages(
+      ClearImageEvent event, Emitter<VendorCategoryState> emit) {
+    emit(VendorCategoryInitial());
   }
 }

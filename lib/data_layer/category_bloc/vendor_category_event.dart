@@ -13,3 +13,5 @@ class UploadImageEvent extends VendorCategoryEvent {
   UploadImageEvent(
       {required this.id, required this.imageName, required this.imageBytes});
 }
+
+class ClearImageEvent extends VendorCategoryEvent {}

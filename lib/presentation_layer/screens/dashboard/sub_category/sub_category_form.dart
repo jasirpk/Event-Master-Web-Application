@@ -1,13 +1,33 @@
 import 'dart:typed_data';
+import 'package:event_master_web/data_layer/category_bloc/vendor_category_bloc.dart';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
 import 'package:event_master_web/presentation_layer/components/form/sub_category_submit_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddSubCategoryScreen extends StatelessWidget {
+class AddSubCategoryScreen extends StatefulWidget {
   final String categoryId;
 
   const AddSubCategoryScreen({super.key, required this.categoryId});
+
+  @override
+  State<AddSubCategoryScreen> createState() => _AddSubCategoryScreenState();
+}
+
+class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
+  VendorCategoryBloc? _vendorCategoryBloc;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _vendorCategoryBloc = context.read<VendorCategoryBloc>();
+  }
+
+  @override
+  void dispose() {
+    _vendorCategoryBloc?.add(ClearImageEvent());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +94,7 @@ class AddSubCategoryScreen extends StatelessWidget {
                         descriptionController: descriptionController,
                         imageNameNotifier: imageNameNotifier,
                         subCategoryId: subCategoryId,
-                        categoryId: categoryId,
+                        categoryId: widget.categoryId,
                         isEditing: isEditing),
                     SizedBox(height: 60),
                   ],
