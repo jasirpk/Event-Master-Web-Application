@@ -1,6 +1,7 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
 import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
 import 'package:event_master_web/data_layer/category_bloc/vendor_category_bloc.dart';
+import 'package:event_master_web/data_layer/request/request_bloc.dart';
 import 'package:event_master_web/firebase_options.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -25,7 +26,8 @@ class EventMasterWeb extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthBloc()..add(CheckUsrEvent())),
-        BlocProvider(create: (context) => VendorCategoryBloc())
+        BlocProvider(create: (context) => VendorCategoryBloc()),
+        BlocProvider(create: (context) => RequestBloc()),
       ],
       child: GetMaterialApp(
         initialRoute: '/',

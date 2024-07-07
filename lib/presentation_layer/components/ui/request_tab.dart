@@ -60,6 +60,8 @@ class BuildRequestWidget extends StatelessWidget {
                   }
                   var vendorDetail =
                       detailSnapshot.data!.data() as Map<String, dynamic>;
+                  bool isAccepted = vendorDetail['isAccepted'] ?? false;
+                  bool isRejected = vendorDetail['isRejected'] ?? false;
                   return Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Container(
@@ -127,6 +129,40 @@ class BuildRequestWidget extends StatelessWidget {
                                               fontWeight: FontWeight.w500),
                                         ),
                                       ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          await vendorRequest
+                                              .updateIsAcceptedField(
+                                                  uid, documentId,
+                                                  isAccepted: true,
+                                                  isRejected: false);
+                                        },
+                                        style: ButtonStyle(
+                                          backgroundColor: WidgetStateProperty.all<
+                                                  Color>(
+                                              myColor), // Ensure myColor is defined
+                                        ),
+                                        child: Text(
+                                          isAccepted ? 'Accepted' : 'Accept',
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ),
+                                      sizedBoxWidth,
+                                      ElevatedButton(
+                                          onPressed: () async {
+                                            await vendorRequest
+                                                .updateIsRejectedField(
+                                                    uid, documentId,
+                                                    isRejected: true,
+                                                    isAccepted: false);
+                                          },
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  WidgetStateProperty.all<
+                                                      Color>(Colors.red)),
+                                          child: Text(isRejected
+                                              ? 'Rejected'
+                                              : 'Reject')),
                                     ],
                                   ),
                                 ],
