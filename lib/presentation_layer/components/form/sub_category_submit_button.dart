@@ -31,6 +31,7 @@ class subCategorySubmitButton extends StatelessWidget {
       width: 200,
       child: ElevatedButton(
         onPressed: () async {
+          bool isFavorite = false;
           if (selectedImageNotifier.value != null &&
               subCategoryNameController.text.isNotEmpty &&
               descriptionController.text.isNotEmpty) {
@@ -42,6 +43,7 @@ class subCategorySubmitButton extends StatelessWidget {
               'about': descriptionController.text,
               'image': image,
               'id': id,
+              'isFavourite': isFavorite
             };
 
             if (image != null && imageBytes != null) {

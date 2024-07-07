@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
+import 'package:event_master_web/presentation_layer/components/shimmer/sub_category.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/sub_category/read_sub_category.dart';
 import 'package:flutter/material.dart';
 import 'package:event_master_web/data_layer/services/sub_category.dart';
@@ -14,13 +15,13 @@ class SubCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return StreamBuilder<QuerySnapshot>(
       stream: subDatabaseMethods.getSubCategories(templateId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return ShimmerSubCategory(
+              height: screenHeight * 0.6, width: screenWidth);
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -61,9 +62,8 @@ class SubCategoryWidget extends StatelessWidget {
                     builder: (context, detailSnapshot) {
                       if (detailSnapshot.connectionState ==
                           ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return ShimmerSubCategory(
+                            height: double.infinity, width: double.infinity);
                       }
 
                       if (!detailSnapshot.hasData ||
