@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
+import 'package:event_master_web/data_layer/category_bloc/vendor_category_bloc.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/components/auth/pushable_button.dart';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/drop_down.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class UpdateScreen extends StatefulWidget {
@@ -19,6 +21,19 @@ class UpdateScreen extends StatefulWidget {
 }
 
 class _UpdateScreenState extends State<UpdateScreen> {
+  VendorCategoryBloc? _vendorCategoryBloc;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _vendorCategoryBloc = context.read<VendorCategoryBloc>();
+  }
+
+  @override
+  void dispose() {
+    _vendorCategoryBloc?.add(ClearImageEvent());
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -34,12 +49,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
     categoryNameController.text = widget.categoryData['categoryName'];
     descriptionController.text = widget.categoryData['description'];
-    @override
-    void dispose() {
-      selectedImageNotifier.dispose();
-      imageNameNotifier.dispose();
-      super.dispose();
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -63,7 +72,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   children: [
                     SizedBox(height: 20),
                     Text(
-                      "Get started by adding a new template \nFor Your Clients",
+                      "Edit your Template",
                       style: TextStyle(fontSize: screenHeight * 0.04),
                     ),
                     SizedBox(height: 20),
@@ -114,13 +123,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
                         await DatabaseMethods()
                             .updateVendorCategoryDetail(widget.id, updatedData);
-
-                        // Clear the fields
-                        categoryNameController.clear();
-                        descriptionController.clear();
-                        selectedClientNotifier.value = null;
-                        selectedImageNotifier.value = null;
-                        imageNameNotifier.value = null;
                       },
                       text: 'Update',
                     ),

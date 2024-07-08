@@ -1,9 +1,12 @@
 import 'dart:typed_data';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
+import 'package:event_master_web/common/style.dart';
+import 'package:event_master_web/data_layer/category_bloc/vendor_category_bloc.dart';
 import 'package:event_master_web/data_layer/services/sub_category.dart';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
 import 'package:event_master_web/presentation_layer/components/form/image_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 class EditSubCategoryScreen extends StatefulWidget {
@@ -38,12 +41,18 @@ class _EditSubCategoryScreenState extends State<EditSubCategoryScreen> {
     descriptionController.text = widget.subCategoryData['about'] ?? '';
   }
 
+  VendorCategoryBloc? _vendorCategoryBloc;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _vendorCategoryBloc = context.read<VendorCategoryBloc>();
+  }
+
   @override
   void dispose() {
+    _vendorCategoryBloc?.add(ClearImageEvent());
     subCategoryNameController.dispose();
     descriptionController.dispose();
-    selectedImageNotifier.dispose();
-    imageNameNotifier.dispose();
     super.dispose();
   }
 
@@ -103,13 +112,23 @@ class _EditSubCategoryScreenState extends State<EditSubCategoryScreen> {
                     SizedBox(height: 40),
                     Center(
                       child: ElevatedButton(
-                        child: Text('Update SubCategory'),
+                        child: Text(
+                          'Update SubCategory',
+                          style: TextStyle(color: Colors.black),
+                        ),
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: myColor,
+                          shadowColor: Colors.tealAccent, // Shadow color
+                          elevation: 5, // Elevation
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(30), // Rounded corners
+                          ),
                           padding: EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 20),
-                          textStyle: TextStyle(fontSize: 20),
+                              horizontal: 20, vertical: 15), // Padding
                         ),
                         onPressed: () async {
+                          bool isFavorite = false;
                           String? newImagePath =
                               widget.subCategoryData['imagePath'];
                           if (selectedImageNotifier.value != null) {
@@ -123,6 +142,7 @@ class _EditSubCategoryScreenState extends State<EditSubCategoryScreen> {
                             'subCategoryName': subCategoryNameController.text,
                             'about': descriptionController.text,
                             'imagePath': newImagePath,
+                            'isFavorite': isFavorite
                           };
 
                           await SubDatabaseMethods().updateSubCategory(
