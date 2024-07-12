@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/common/style.dart';
 import 'package:event_master_web/data_layer/services/user_profile/vendor_request.dart';
 import 'package:event_master_web/presentation_layer/components/shimmer/alltemplates.dart';
+import 'package:event_master_web/presentation_layer/screens/dashboard/vendor_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BuildRequestWidget extends StatelessWidget {
   final String uid;
@@ -62,142 +64,147 @@ class BuildRequestWidget extends StatelessWidget {
                       detailSnapshot.data!.data() as Map<String, dynamic>;
                   bool isAccepted = vendorDetail['isAccepted'] ?? false;
                   bool isRejected = vendorDetail['isRejected'] ?? false;
-                  return Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Container(
-                      width: screenWidth * 0.8,
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white38,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: screenWidth * 0.20,
-                            height: screenHeight * 0.17,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.grey,
-                                image: DecorationImage(
-                                    image: imagePath.startsWith('http')
-                                        ? NetworkImage(imagePath)
-                                        : AssetImage(imagePath)
-                                            as ImageProvider,
-                                    fit: BoxFit.cover)),
-                          ),
-                          SizedBox(width: 8.0),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    vendorDetail['categoryName'],
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
+                  return InkWell(
+                    onTap: () {
+                      Get.to(() => VendorDetailScreen(
+                          vendorName: vendorDetail['categoryName'],
+                          vendorImage: imagePath,
+                          location: vendorDetail['location'],
+                          description: vendorDetail['description'],
+                          images: List<Map<String, dynamic>>.from(
+                              vendorDetail['images']),
+                          budget: Map<String, double>.from(
+                              vendorDetail['budget'])));
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Container(
+                        width: screenWidth * 0.8,
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white38,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: screenWidth * 0.20,
+                              height: screenHeight * 0.17,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey,
+                                  image: DecorationImage(
+                                      image: imagePath.startsWith('http')
+                                          ? NetworkImage(imagePath)
+                                          : AssetImage(imagePath)
+                                              as ImageProvider,
+                                      fit: BoxFit.cover)),
+                            ),
+                            SizedBox(width: 8.0),
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      vendorDetail['categoryName'],
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 4.0),
-                                  Text(
-                                    vendorDetail['description'],
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 4,
-                                    style: TextStyle(fontSize: 14.0),
-                                  ),
-                                  SizedBox(height: 4.0),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
-                                        color: myColor,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 4.0),
-                                      Expanded(
-                                        child: Text(
-                                          vendorDetail['location'],
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              fontSize: screenHeight * 0.014,
-                                              fontWeight: FontWeight.w500),
+                                    SizedBox(height: 4.0),
+                                    Text(
+                                      vendorDetail['description'],
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 4,
+                                      style: TextStyle(fontSize: 14.0),
+                                    ),
+                                    SizedBox(height: 4.0),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          color: myColor,
+                                          size: 20,
                                         ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          await vendorRequest
-                                              .updateIsAcceptedField(
-                                                  uid, documentId,
-                                                  isAccepted: true,
-                                                  isRejected: false);
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor: WidgetStateProperty.all<
-                                                  Color>(
-                                              myColor), // Ensure myColor is defined
+                                        SizedBox(width: 4.0),
+                                        Expanded(
+                                          child: Text(
+                                            vendorDetail['location'],
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                fontSize: screenHeight * 0.014,
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                         ),
-                                        child: Text(
-                                          isAccepted ? 'Accepted' : 'Accept',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ),
-                                      sizedBoxWidth,
-                                      ElevatedButton(
+                                        ElevatedButton(
                                           onPressed: () async {
                                             await vendorRequest
-                                                .updateIsRejectedField(
+                                                .updateIsAcceptedField(
                                                     uid, documentId,
-                                                    isRejected: true,
-                                                    isAccepted: false);
+                                                    isAccepted: true,
+                                                    isRejected: false);
                                           },
                                           style: ButtonStyle(
-                                              backgroundColor:
-                                                  WidgetStateProperty.all<
-                                                      Color>(Colors.red)),
-                                          child: Text(isRejected
-                                              ? 'Rejected'
-                                              : 'Reject')),
-                                    ],
-                                  ),
-                                ],
+                                            backgroundColor:
+                                                WidgetStateProperty.all<Color>(
+                                                    myColor), // Ensure myColor is defined
+                                          ),
+                                          child: Text(
+                                            isAccepted ? 'Accepted' : 'Accept',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                        sizedBoxWidth,
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              await vendorRequest
+                                                  .updateIsRejectedField(
+                                                      uid, documentId,
+                                                      isRejected: true,
+                                                      isAccepted: false);
+                                            },
+                                            style: ButtonStyle(
+                                                backgroundColor:
+                                                    WidgetStateProperty.all<
+                                                        Color>(Colors.red)),
+                                            child: Text(isRejected
+                                                ? 'Rejected'
+                                                : 'Reject')),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              PopupMenuButton(
-                                onSelected: (value) async {
-                                  if (value == 'View Detail') {
-                                  } else if (value == 'delete') {
-                                  } else if (value == 'update') {}
-                                },
-                                itemBuilder: (context) {
-                                  return [
-                                    PopupMenuItem(
-                                      child: Text('Delete'),
-                                      value: 'delete',
-                                    ),
-                                    PopupMenuItem(
-                                      child: Text('View Detail'),
-                                      value: 'View Detail',
-                                    ),
-                                    PopupMenuItem(
-                                      child: Text('Update'),
-                                      value: 'update',
-                                    ),
-                                  ];
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                PopupMenuButton(
+                                  onSelected: (value) async {
+                                    if (value == 'View Detail') {}
+                                  },
+                                  itemBuilder: (context) {
+                                    return [
+                                      PopupMenuItem(
+                                        child: Text('View Detail'),
+                                        value: 'View Detail',
+                                      ),
+                                    ];
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

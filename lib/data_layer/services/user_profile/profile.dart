@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserProfile {
   Stream<QuerySnapshot> getUserProfile() {
     return FirebaseFirestore.instance
-        .collection('generatedVendors')
+        .collection('entrepreneurs')
         .where('isValid', isEqualTo: true)
         .snapshots();
   }
@@ -13,7 +13,7 @@ class UserProfile {
   Future<DocumentSnapshot> getUserDetailById(String uid) async {
     try {
       DocumentSnapshot docSanpshot = await FirebaseFirestore.instance
-          .collection('generatedVendors')
+          .collection('entrepreneurs')
           .doc(uid)
           .get();
       return docSanpshot;

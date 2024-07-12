@@ -60,6 +60,8 @@ class ChecklistScreen extends StatelessWidget {
   }
 
   Widget _buildRejectdTab(double screenWidth, double screenHeight) {
-    return BuildRejectedWidget(uid: uid,);
+    return BuildRejectedWidget(
+      uid: uid,
+    );
   }
 }

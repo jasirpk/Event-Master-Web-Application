@@ -7,7 +7,7 @@ class VendorRequest {
       String uid, String documentId) async {
     try {
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-          .collection('generatedVendors')
+          .collection('entrepreneurs')
           .doc(uid)
           .collection('vendorDetails')
           .doc(documentId)
@@ -27,7 +27,7 @@ class VendorRequest {
 
   Stream<QuerySnapshot> getGeneratedCategoryDetails(String uid) {
     return FirebaseFirestore.instance
-        .collection('generatedVendors')
+        .collection('entrepreneurs')
         .doc(uid)
         .collection('vendorDetails')
         .where('isValid', isEqualTo: true)
@@ -36,7 +36,7 @@ class VendorRequest {
 
   Stream<QuerySnapshot> getAcceptedVendorList(String uid) {
     return FirebaseFirestore.instance
-        .collection('generatedVendors')
+        .collection('entrepreneurs')
         .doc(uid)
         .collection('vendorDetails')
         .where('isAccepted', isEqualTo: true)
@@ -48,7 +48,7 @@ class VendorRequest {
       {required bool isAccepted, required bool isRejected}) async {
     try {
       CollectionReference vendorDetailsRef = FirebaseFirestore.instance
-          .collection('generatedVendors')
+          .collection('entrepreneurs')
           .doc(uid)
           .collection('vendorDetails');
 
@@ -65,7 +65,7 @@ class VendorRequest {
 
   Stream<QuerySnapshot> getRejectedVendorList(String uid) {
     return FirebaseFirestore.instance
-        .collection('generatedVendors')
+        .collection('entrepreneurs')
         .doc(uid)
         .collection('vendorDetails')
         .where('isRejected', isEqualTo: true)
@@ -77,7 +77,7 @@ class VendorRequest {
       {required bool isRejected, required bool isAccepted}) async {
     try {
       CollectionReference vendorDetailsRef = FirebaseFirestore.instance
-          .collection('generatedVendors')
+          .collection('entrepreneurs')
           .doc(uid)
           .collection('vendorDetails');
 

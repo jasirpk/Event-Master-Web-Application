@@ -20,6 +20,7 @@ class RoutsClass {
 
   static List<GetPage> routes = [
     GetPage(name: getStarted, page: () => GetStartedScreen()),
+    // GetPage(name: getStarted, page: () => VendorDetailScreen()),
     GetPage(
         name: signuP,
         page: () => SignupScreen(),
