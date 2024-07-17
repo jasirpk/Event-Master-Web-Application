@@ -106,13 +106,11 @@ class EntrepreneurDetailScreen extends StatelessWidget {
                           SizedBox(height: 40),
                           Row(
                             children: [
-                              Flexible(
-                                child: RichTextWidget(
-                                  size: screenHeight * 0.026,
-                                  screenHeight: screenHeight,
-                                  text: website,
-                                  suggestText: 'Website:',
-                                ),
+                              RichTextWidget(
+                                size: screenHeight * 0.026,
+                                screenHeight: screenHeight,
+                                text: website,
+                                suggestText: 'Website:',
                               ),
                             ],
                           ),

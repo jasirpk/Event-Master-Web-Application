@@ -27,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             email: event.email, password: event.password);
         final user = UserCredential.user!;
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
+            .collection('developer')
             .doc(user.uid)
             .get();
         String platform = userDoc['platform'];
@@ -58,7 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = UserCredential.user;
         if (user != null) {
           await FirebaseFirestore.instance
-              .collection('users')
+              .collection('developer')
               .doc(user.uid)
               .set({
             'uid': user.uid,
