@@ -8,6 +8,7 @@ import 'package:event_master_web/presentation_layer/components/auth/auth_bottom_
 import 'package:event_master_web/presentation_layer/components/auth/password_field.dart';
 import 'package:event_master_web/presentation_layer/components/auth/pushable_button.dart';
 import 'package:event_master_web/presentation_layer/components/auth/text_field.dart';
+import 'package:event_master_web/presentation_layer/screens/auth/forgot_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -142,7 +143,9 @@ class LoginScreen extends StatelessWidget {
                                       ),
                                       SizedBox(height: 16),
                                       AuthBottomText(
-                                        onpressed: () {},
+                                        onpressed: () {
+                                          Get.to(() => ChangePassword());
+                                        },
                                         text: 'Forgot Password?',
                                         subText: 'click',
                                       ),

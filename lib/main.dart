@@ -26,6 +26,7 @@ class EventMasterWeb extends StatelessWidget {
         BlocProvider(create: (context) => VendorCategoryBloc()),
       ],
       child: GetMaterialApp(
+        title: 'Event Master',
         initialRoute: '/',
         getPages: RoutsClass.routes,
         debugShowCheckedModeBanner: false,

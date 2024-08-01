@@ -45,7 +45,8 @@ class SignupScreen extends StatelessWidget {
             context.read<AuthBloc>().add(SignUp(userModel: user));
           } else if (state is AuthenticatedErrors) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              showCustomSnackBar('Error', 'Account Not Registered');
+              showCustomSnackBar('Error',
+                  'The email address is already in use by another account.');
             });
           }
         },
