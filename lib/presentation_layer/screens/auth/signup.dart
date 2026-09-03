@@ -35,7 +35,7 @@ class SignupScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is Authenticated) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              showCustomSnackBar('Success', 'Successfully Added');
+              showCustomSnackBar(context,'Success', 'Successfully Added');
               Get.offAllNamed(RoutsClass.getHomeRout());
             });
           } else if (state is ValidationSuccess) {
@@ -45,8 +45,7 @@ class SignupScreen extends StatelessWidget {
             context.read<AuthBloc>().add(SignUp(userModel: user));
           } else if (state is AuthenticatedErrors) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              showCustomSnackBar('Error',
-                  'The email address is already in use by another account.');
+              showCustomSnackBar(context,'Error', state.message);
             });
           }
         },

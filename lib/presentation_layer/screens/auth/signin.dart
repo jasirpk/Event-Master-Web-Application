@@ -28,9 +28,9 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is Authenticated) {
           Get.offAllNamed(RoutsClass.getHomeRout());
-          showCustomSnackBar('Success', 'Successfully Added');
+          showCustomSnackBar(context, 'Success', 'Successfully Added');
         } else if (state is AuthenticatedErrors) {
-          showCustomSnackBar('Error', 'Account Not Registered');
+          showCustomSnackBar(context, 'Error', 'Account Not Registered');
         }
       },
       child: Scaffold(
@@ -88,10 +88,7 @@ class LoginScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     'Login ',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: screenHeight * 0.04,
-                                        fontFamily: 'JacquesFracois'),
+                                    style: TextStyle(color: Colors.white, fontSize: screenHeight * 0.04, fontFamily: 'JacquesFracois'),
                                   ),
                                   sizedBox,
                                   TextFieldWidget(
@@ -109,24 +106,19 @@ class LoginScreen extends StatelessWidget {
                                     text: 'Login',
                                     onPressed: () {
                                       final email = userEmailController.text;
-                                      final password =
-                                          userPasswordController.text;
+                                      final password = userPasswordController.text;
                                       if (email.isEmpty || password.isEmpty) {
-                                        showCustomSnackBar('Error!',
-                                            'please Fill All Fields !');
+                                        showCustomSnackBar(context,'Error!', 'please Fill All Fields !');
                                         return;
                                       }
-                                      authBloc.add(LoginEvent(
-                                          email: email, password: password));
+                                      authBloc.add(LoginEvent(email: email, password: password));
                                     },
                                   ),
                                   SizedBox(height: 16),
                                   Text(
                                     'Or',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
+                                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
                                   ),
                                   SizedBox(height: 8),
                                   Column(
@@ -135,8 +127,7 @@ class LoginScreen extends StatelessWidget {
                                     children: [
                                       AuthBottomText(
                                         onpressed: () {
-                                          Get.toNamed(
-                                              RoutsClass.getSignUpRoute());
+                                          Get.toNamed(RoutsClass.getSignUpRoute());
                                         },
                                         text: 'Don\'t have an account?',
                                         subText: ' Create One',

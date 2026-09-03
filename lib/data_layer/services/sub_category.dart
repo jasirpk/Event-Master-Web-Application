@@ -4,10 +4,11 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 
 class SubDatabaseMethods {
   // Sub-categories operations
-  Future<void> addSubCategory(String categoryId, String subCategoryId,
+  Future<void> addSubCategory(BuildContext context,String categoryId, String subCategoryId,
       Map<String, dynamic> subCategoryDetails, Uint8List? imageBytes,
       {bool isEditing = false}) async {
     try {
@@ -31,10 +32,10 @@ class SubDatabaseMethods {
           .set(subCategoryDetails);
 
       log('Sub-category added successfully');
-      showCustomSnackBar('Success', 'Sub-category added successfully');
+      showCustomSnackBar(context,'Success', 'Sub-category added successfully');
     } catch (e) {
       log('Error adding sub-category: $e');
-      showCustomSnackBar('Error', 'Failed to add sub-category');
+      showCustomSnackBar(context,'Error', 'Failed to add sub-category');
     }
   }
 
@@ -80,7 +81,7 @@ class SubDatabaseMethods {
         .snapshots();
   }
 
-  Future<void> updateSubCategory(String categoryId, String subCategoryId,
+  Future<void> updateSubCategory(BuildContext context,String categoryId, String subCategoryId,
       Map<String, dynamic> subCategoryDetails) async {
     try {
       await FirebaseFirestore.instance
@@ -89,11 +90,11 @@ class SubDatabaseMethods {
           .collection('SubCategories')
           .doc(subCategoryId)
           .update(subCategoryDetails);
-      showCustomSnackBar('Success', 'Sub-category updated successfully.');
+      showCustomSnackBar(context,'Success', 'Sub-category updated successfully.');
       log('Sub-category updated successfully.');
     } catch (e) {
       log('Error updating sub-category detail: $e');
-      showCustomSnackBar(
+      showCustomSnackBar(context,
           'Error', 'Failed to update sub-category details. Please try again.');
     }
   }

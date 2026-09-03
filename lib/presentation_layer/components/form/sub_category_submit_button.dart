@@ -31,9 +31,7 @@ class subCategorySubmitButton extends StatelessWidget {
       width: 200,
       child: ElevatedButton(
         onPressed: () async {
-          if (selectedImageNotifier.value != null &&
-              subCategoryNameController.text.isNotEmpty &&
-              descriptionController.text.isNotEmpty) {
+          if (selectedImageNotifier.value != null && subCategoryNameController.text.isNotEmpty && descriptionController.text.isNotEmpty) {
             String? image = imageNameNotifier.value;
             Uint8List? imageBytes = selectedImageNotifier.value;
             String id = subCategoryId ?? randomAlphaNumeric(10);
@@ -48,6 +46,7 @@ class subCategorySubmitButton extends StatelessWidget {
               try {
                 await SubDatabaseMethods()
                     .addSubCategory(
+                  context,
                   categoryId,
                   id,
                   subCategoryFields,
@@ -57,8 +56,7 @@ class subCategorySubmitButton extends StatelessWidget {
                     .then((value) {
                   print('The sub categories are added successfully');
                   Fluttertoast.showToast(
-                    msg:
-                        'The sub-category details are ${isEditing == true ? 'updated' : 'added'} successfully',
+                    msg: 'The sub-category details are ${isEditing == true ? 'updated' : 'added'} successfully',
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.CENTER,
                     backgroundColor: Colors.green,
@@ -100,8 +98,7 @@ class subCategorySubmitButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30), // Rounded corners
           ),
-          padding:
-              EdgeInsets.symmetric(horizontal: 20, vertical: 15), // Padding
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15), // Padding
         ),
         child: Text(
           'Submit',

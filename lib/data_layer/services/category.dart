@@ -4,28 +4,22 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
 class DatabaseMethods {
-  Future<void> addVendorCategoryDetail(Map<String, dynamic> categoryDetails,
-      String id, String imageName, Uint8List imageBytes,
+  Future<void> addVendorCategoryDetail(BuildContext context,Map<String, dynamic> categoryDetails, String id, String imageName, Uint8List imageBytes,
       {bool isEditing = false}) async {
     try {
-      final docSnapshot = await FirebaseFirestore.instance
-          .collection('Categories')
-          .doc(id)
-          .get();
+      final docSnapshot = await FirebaseFirestore.instance.collection('Categories').doc(id).get();
 
       if (docSnapshot.exists && isEditing) {
-        await updateVendorCategoryDetail(id, categoryDetails);
+        await updateVendorCategoryDetail(context,id, categoryDetails);
       } else {
         String? imagePath = await uploadImage(id, imageName, imageBytes);
 
         if (imagePath != null) {
           categoryDetails['imagePath'] = imagePath;
-          await FirebaseFirestore.instance
-              .collection('Categories')
-              .doc(id)
-              .set(categoryDetails);
+          await FirebaseFirestore.instance.collection('Categories').doc(id).set(categoryDetails);
           log('Vendor category detail ${isEditing ? 'updated' : 'added'} successfully.');
         } else {
           log('Failed to upload image. Category detail not ${isEditing ? 'updated' : 'added'}.');
@@ -38,10 +32,7 @@ class DatabaseMethods {
 
   Future<DocumentSnapshot> getCategoryDetailById(String id) async {
     try {
-      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-          .collection('Categories')
-          .doc(id)
-          .get();
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance.collection('Categories').doc(id).get();
       return docSnapshot;
     } catch (e) {
       log('Error fetching category detail by ID: $e');
@@ -53,41 +44,29 @@ class DatabaseMethods {
     return FirebaseFirestore.instance.collection('Categories').snapshots();
   }
 
-  Future<void> updateVendorCategoryDetail(
-      String id, Map<String, dynamic> categoryDetails) async {
+  Future<void> updateVendorCategoryDetail(BuildContext context,String id, Map<String, dynamic> categoryDetails) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('Categories')
-          .doc(id)
-          .update(categoryDetails);
-      showCustomSnackBar(
-          'Success', 'Vendor category detail updated successfully.');
+      await FirebaseFirestore.instance.collection('Categories').doc(id).update(categoryDetails);
+      showCustomSnackBar(context, 'Success', 'Vendor category detail updated successfully.');
       log('Vendor category detail updated successfully.');
     } catch (e) {
       log('Error updating vendor category detail: $e');
-      showCustomSnackBar(
-          'Error', 'Failed to update category details. Please try again.');
+      showCustomSnackBar(context,'Error', 'Failed to update category details. Please try again.');
     }
   }
 
   Future<void> deleteVendorCategoryDeatail(String id) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('Categories')
-          .doc(id)
-          .delete();
+      await FirebaseFirestore.instance.collection('Categories').doc(id).delete();
       log('Vendor category detail deleted successfully.');
     } catch (e) {
       log('Error deleting vendor category detail: $e');
     }
   }
 
-  Future<String?> uploadImage(
-      String id, String imageName, Uint8List imageBytes) async {
+  Future<String?> uploadImage(String id, String imageName, Uint8List imageBytes) async {
     try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('category_images/$id/$imageName');
+      final storageRef = FirebaseStorage.instance.ref().child('category_images/$id/$imageName');
       UploadTask uploadTask = storageRef.putData(imageBytes);
       TaskSnapshot snapshot = await uploadTask.whenComplete(() => {});
       String downloadUrl = await snapshot.ref.getDownloadURL();

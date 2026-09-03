@@ -10,8 +10,7 @@ class SubCategoryDetailScreen extends StatelessWidget {
   final Map<String, dynamic> subCategoryData;
   final SubDatabaseMethods subDatabaseMethods = SubDatabaseMethods();
 
-  SubCategoryDetailScreen(
-      {super.key, required this.categoryId, required this.subCategoryData});
+  SubCategoryDetailScreen({super.key, required this.categoryId, required this.subCategoryData});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +40,7 @@ class SubCategoryDetailScreen extends StatelessWidget {
                           image: DecorationImage(
                             image: NetworkImage(subCategoryData['imagePath']),
                             fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.1), BlendMode.color),
+                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.color),
                           ),
                         ),
                       ),
@@ -53,15 +51,11 @@ class SubCategoryDetailScreen extends StatelessWidget {
                           onSelected: (value) async {
                             if (value == 'edit') {
                               Get.to(() => EditSubCategoryScreen(
-                                  categoryId: categoryId,
-                                  subCategoryId: subCategoryData['id'],
-                                  subCategoryData: subCategoryData));
+                                  categoryId: categoryId, subCategoryId: subCategoryData['id'], subCategoryData: subCategoryData));
                             } else if (value == 'delete') {
-                              await subDatabaseMethods.deleteSubCategory(
-                                  categoryId, subCategoryData['id']);
+                              await subDatabaseMethods.deleteSubCategory(categoryId, subCategoryData['id']);
                               Get.back();
-                              showCustomSnackBar('Deleted ⚠ ',
-                                  'Category deleted successfully!');
+                              showCustomSnackBar(context, 'Deleted ⚠ ', 'Category deleted successfully!');
                             }
                           },
                           itemBuilder: (context) => [

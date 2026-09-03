@@ -23,18 +23,15 @@ class EditSubCategoryScreen extends StatefulWidget {
 }
 
 class _EditSubCategoryScreenState extends State<EditSubCategoryScreen> {
-  final TextEditingController subCategoryNameController =
-      TextEditingController();
+  final TextEditingController subCategoryNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final ValueNotifier<Uint8List?> selectedImageNotifier =
-      ValueNotifier<Uint8List?>(null);
+  final ValueNotifier<Uint8List?> selectedImageNotifier = ValueNotifier<Uint8List?>(null);
   final ValueNotifier<String?> imageNameNotifier = ValueNotifier<String?>(null);
 
   @override
   void initState() {
     super.initState();
-    subCategoryNameController.text =
-        widget.subCategoryData['subCategoryName'] ?? '';
+    subCategoryNameController.text = widget.subCategoryData['subCategoryName'] ?? '';
     descriptionController.text = widget.subCategoryData['about'] ?? '';
   }
 
@@ -97,37 +94,29 @@ class _EditSubCategoryScreenState extends State<EditSubCategoryScreen> {
                       screenHeight: screenHeight,
                       selectedImageNotifier: selectedImageNotifier,
                       imageNameNotifier: imageNameNotifier,
-                      initialImageUrl:
-                          widget.subCategoryData['imagePath'] ?? '',
+                      initialImageUrl: widget.subCategoryData['imagePath'] ?? '',
                     ),
                     SizedBox(height: 40),
                     Center(
                       child: ElevatedButton(
                         child: Text('Update SubCategory'),
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 20),
+                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                           textStyle: TextStyle(fontSize: 20),
                         ),
                         onPressed: () async {
-                          String? newImagePath =
-                              widget.subCategoryData['imagePath'];
+                          String? newImagePath = widget.subCategoryData['imagePath'];
                           if (selectedImageNotifier.value != null) {
                             Uint8List imageBytes = selectedImageNotifier.value!;
                             String imageName = imageNameNotifier.value ?? '';
-                            newImagePath = await SubDatabaseMethods()
-                                .uploadImage(widget.subCategoryId, imageName,
-                                    imageBytes);
+                            newImagePath = await SubDatabaseMethods().uploadImage(widget.subCategoryId, imageName, imageBytes);
                           }
                           Map<String, dynamic> subCategoryFields = {
                             'subCategoryName': subCategoryNameController.text,
                             'about': descriptionController.text,
                             'imagePath': newImagePath,
                           };
-                          await SubDatabaseMethods().updateSubCategory(
-                              widget.categoryId,
-                              widget.subCategoryId,
-                              subCategoryFields);
+                          await SubDatabaseMethods().updateSubCategory(context, widget.categoryId, widget.subCategoryId, subCategoryFields);
                         },
                       ),
                     ),

@@ -27,16 +27,14 @@ class CarousalSliderWidget extends StatelessWidget {
       itemCount: documents.length,
       itemBuilder: (context, index, pageIndex) {
         var data = documents[index].data() as Map<String, dynamic>;
-        String imagePath = data['imagePath'] ??
-            'assets/images/Screenshot 2024-05-22 205021.png';
+        String imagePath = data['imagePath'] ?? 'assets/images/Screenshot 2024-05-22 205021.png';
         String documentId = documents[index].id;
 
         return FutureBuilder<DocumentSnapshot>(
           future: databaseMethods.getCategoryDetailById(documentId),
           builder: (context, detailSnapshot) {
             if (detailSnapshot.connectionState == ConnectionState.waiting) {
-              return ShimmerCarouselItem(
-                  screenWidth: screenWidth, screenHeight: screenHeight);
+              return ShimmerCarouselItem(screenWidth: screenWidth, screenHeight: screenHeight);
             }
             if (!detailSnapshot.hasData) {
               return Center(
@@ -45,8 +43,7 @@ class CarousalSliderWidget extends StatelessWidget {
                 ),
               );
             }
-            var detailData =
-                detailSnapshot.data!.data() as Map<String, dynamic>;
+            var detailData = detailSnapshot.data!.data() as Map<String, dynamic>;
 
             return InkWell(
               onTap: () {
@@ -57,9 +54,7 @@ class CarousalSliderWidget extends StatelessWidget {
                   color: const Color(0xFF37474F),
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: imagePath.startsWith('http')
-                        ? NetworkImage(imagePath)
-                        : AssetImage(imagePath) as ImageProvider,
+                    image: imagePath.startsWith('http') ? NetworkImage(imagePath) : AssetImage(imagePath) as ImageProvider,
                     fit: BoxFit.cover,
                   ),
                   border: Border.all(color: Colors.teal),
@@ -91,15 +86,10 @@ class CarousalSliderWidget extends StatelessWidget {
                         PopupMenuButton(
                           onSelected: (value) async {
                             if (value == 'View Detail') {
-                              Get.to(
-                                  () => CategoryDetailScreen(
-                                      categoryData: detailData),
-                                  transition: Transition.leftToRight);
+                              Get.to(() => CategoryDetailScreen(categoryData: detailData), transition: Transition.leftToRight);
                             } else if (value == 'delete') {
-                              await databaseMethods
-                                  .deleteVendorCategoryDeatail(documentId);
-                              showCustomSnackBar('Deleted ⚠ ',
-                                  'category deleted Successfully!');
+                              await databaseMethods.deleteVendorCategoryDeatail(documentId);
+                              showCustomSnackBar(context, 'Deleted ⚠ ', 'category deleted Successfully!');
                             }
                           },
                           itemBuilder: (context) {

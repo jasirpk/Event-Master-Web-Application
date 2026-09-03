@@ -23,21 +23,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>((event, emit) async {
       emit(AuthLoading());
       try {
-        final UserCredential = await auth.signInWithEmailAndPassword(
-            email: event.email, password: event.password);
+        final UserCredential = await auth.signInWithEmailAndPassword(email: event.email, password: event.password);
         final user = UserCredential.user!;
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('developer')
-            .doc(user.uid)
-            .get();
-        String platform = userDoc['platform'];
-        if (platform == 'web') {
+        final isPlatformAdmin = await _hasAdminClaim(user);
+        if (isPlatformAdmin) {
           await saveAuthState(user.uid, user.email!);
           print('Account is Authenticated');
 
-          emit(Authenticated(
-              UserModel(uid: user.uid, email: user.email, password: '')));
+          emit(Authenticated(UserModel(uid: user.uid, email: user.email, password: '')));
         } else {
+          await auth.signOut();
+          await cleareAuthState();
           emit(AuthenticatedErrors(message: 'Not Authenticated this Platform'));
           print('Authentication Failed: Not Authenticated for this platform');
         }
@@ -52,31 +48,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignUp>((event, emit) async {
       emit(AuthLoading());
       try {
-        final UserCredential = await auth.createUserWithEmailAndPassword(
-            email: event.userModel.email.toString(),
-            password: event.userModel.password.toString());
+        final UserCredential =
+            await auth.createUserWithEmailAndPassword(email: event.userModel.email.toString(), password: event.userModel.password.toString());
         final user = UserCredential.user;
         if (user != null) {
+          // Account bookkeeping only — no 'password' and no 'platform' field.
+          // Authorization is decided solely by the 'role' Firebase custom
+          // claim, which is assigned out-of-band by the Firebase Admin SDK.
           await FirebaseFirestore.instance
               .collection('developer')
               .doc(user.uid)
-              .set({
-            'uid': user.uid,
-            'email': user.email,
-            'password': event.userModel.password,
-            'platform': 'web',
-            'createAt': DateTime.now()
-          });
-          await FirebaseAuth.instance.currentUser!.getIdToken(true);
-          await FirebaseAuth.instance.currentUser!
-              .updateProfile(displayName: 'web');
-          await saveAuthState(user.uid, user.email!);
+              .set({'uid': user.uid, 'email': user.email, 'createAt': DateTime.now()});
+          await user.updateProfile(displayName: 'web');
 
-          log('Account is Authenticated');
-          print('Current FirebaseAuth user UID: ${user.uid}');
-          print('Current FirebaseAuth user Email: ${user.email}');
-          emit(Authenticated(
-              UserModel(uid: user.uid, email: user.email!, password: '')));
+          // A brand-new sign-up never carries the admin claim, but this is
+          // verified rather than assumed so SignUp never grants access itself.
+          final isPlatformAdmin = await _hasAdminClaim(user);
+          if (isPlatformAdmin) {
+            await saveAuthState(user.uid, user.email!);
+            log('Account is Authenticated');
+            emit(Authenticated(UserModel(uid: user.uid, email: user.email!, password: '')));
+          } else {
+            await auth.signOut();
+            emit(AuthenticatedErrors(message: 'Account created. An administrator must grant access before you can sign in.'));
+          }
         } else {
           emit(UnAuthenticated());
         }
@@ -91,32 +86,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<CheckUsrEvent>((event, emit) async {
       emit(AuthLoading());
 
-      await Future.delayed(Duration(seconds: 2));
-      final prefs = await SharedPreferences.getInstance();
-      final uid = await prefs.getString('uid');
-      final email = await prefs.getString('email');
+      // Wait for Firebase Auth to finish restoring its persisted session
+      // (currentUser can be null for an instant on startup, e.g. on web,
+      // before persistence has loaded) instead of trusting SharedPreferences.
+      final user = await auth.authStateChanges().first;
 
-      print('SharedPreferences UID: $uid');
-      print('SharedPreferences Email: $email');
-
-      if (uid != null) {
-        print('User found in sharedPreferenc');
-        Get.offAllNamed(RoutsClass.getHomeRout());
-        emit(Authenticated(UserModel(uid: uid, email: email, password: '')));
-      } else {
-        print('User NOt found in FirebaseAuth');
+      if (user == null) {
+        await cleareAuthState();
         emit(UnAuthenticated());
+        print('No active Firebase Auth session');
+        return;
+      }
 
-        final user = auth.currentUser;
-
-        if (user != null) {
-          print('User Fount in FireBase');
-          Get.offAllNamed(RoutsClass.getHomeRout());
-          emit(Authenticated(UserModel(uid: uid, email: email, password: '')));
-        } else {
-          emit(UnAuthenticated());
-          print('User Not found in FirebaseAuth');
-        }
+      final isPlatformAdmin = await _hasAdminClaim(user);
+      if (isPlatformAdmin) {
+        await saveAuthState(user.uid, user.email ?? '');
+        Get.offAllNamed(RoutsClass.getHomeRout());
+        emit(Authenticated(UserModel(uid: user.uid, email: user.email, password: '')));
+        print('Session restored for platform admin');
+      } else {
+        await auth.signOut();
+        await cleareAuthState();
+        emit(UnAuthenticated());
+        print('Firebase session found but role=admin claim is missing');
       }
     });
 
@@ -142,6 +134,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthenticatedErrors(message: event.errorMessage));
     });
   }
+// Platform-admin authorization...!
+// Source of truth is the verified Firebase ID-token 'role' custom claim —
+// never Firestore developer/{uid}.platform and never SharedPreferences.
+
+  Future<bool> _hasAdminClaim(User user) async {
+    final tokenResult = await user.getIdTokenResult(true);
+    return tokenResult.claims?['role'] == 'admin';
+  }
+
 // store Credential storing in sharedPreference...!
 
   Future<void> saveAuthState(String uid, String email) async {
@@ -163,12 +164,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
 // ..................Validation..............!
 
-  FutureOr<void> validateTextField(
-      TextFieldTextChanged event, Emitter<AuthState> emit) {
+  FutureOr<void> validateTextField(TextFieldTextChanged event, Emitter<AuthState> emit) {
     try {
-      emit(isValidEmail(event.text)
-          ? TextValid()
-          : TextInvalid(message: 'Enter Valid Email'));
+      emit(isValidEmail(event.text) ? TextValid() : TextInvalid(message: 'Enter Valid Email'));
     } catch (e) {
       emit(AuthenticatedErrors(message: e.toString()));
     }
@@ -178,12 +176,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     return text.isNotEmpty && text.contains('@gmail.com');
   }
 
-  FutureOr<void> validatePasswordField(
-      TextFieldPasswordChanged event, Emitter<AuthState> emit) {
+  FutureOr<void> validatePasswordField(TextFieldPasswordChanged event, Emitter<AuthState> emit) {
     try {
-      emit(isvalidPassword(event.password)
-          ? passwordValid()
-          : passwordInvalid(message: 'Enter Valid Passwoword'));
+      emit(isvalidPassword(event.password) ? passwordValid() : passwordInvalid(message: 'Enter Valid Passwoword'));
     } catch (e) {
       emit(AuthenticatedErrors(message: e.toString()));
     }
@@ -193,8 +188,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     return password.isNotEmpty && password.length >= 6;
   }
 
-  FutureOr<void> togglePasswordVisibility(
-      TogglePasswordVisiblility event, Emitter<AuthState> emit) {
+  FutureOr<void> togglePasswordVisibility(TogglePasswordVisiblility event, Emitter<AuthState> emit) {
     isPasswordVisible = !isPasswordVisible;
     emit(PasswordVisibilityToggled(isVisible: isPasswordVisible));
   }

@@ -49,8 +49,7 @@ class CategoryDetailWidget extends StatelessWidget {
                 } else if (value == 'delete') {
                   await databaseMethods.deleteVendorCategoryDeatail(documentId);
                   Get.back();
-                  showCustomSnackBar(
-                      'Deleted ⚠ ', 'category deleted Successfully!');
+                  showCustomSnackBar(context, 'Deleted ⚠ ', 'category deleted Successfully!');
                 }
               },
               itemBuilder: (context) => [

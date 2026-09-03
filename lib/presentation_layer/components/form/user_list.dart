@@ -137,7 +137,7 @@ class UserListWidget extends StatelessWidget {
                                     await databaseMethods
                                         .deleteVendorCategoryDeatail(
                                             documentId);
-                                    showCustomSnackBar('Deleted ⚠',
+                                    showCustomSnackBar(context,'Deleted ⚠',
                                         'category deleted Successfully!');
                                   }
                                 },

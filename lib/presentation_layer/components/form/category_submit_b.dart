@@ -48,7 +48,7 @@ class SubmitButton extends StatelessWidget {
 
             if (imagePath != null && imageBytes != null) {
               await DatabaseMethods()
-                  .addVendorCategoryDetail(
+                  .addVendorCategoryDetail(context,
                 categoryFields,
                 id,
                 'Categories/$id/$imagePath',

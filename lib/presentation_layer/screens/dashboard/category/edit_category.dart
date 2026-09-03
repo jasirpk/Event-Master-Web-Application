@@ -26,10 +26,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
     TextEditingController categoryNameController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
 
-    ValueNotifier<String?> selectedClientNotifier =
-        ValueNotifier<String?>(null);
-    ValueNotifier<Uint8List?> selectedImageNotifier =
-        ValueNotifier<Uint8List?>(null);
+    ValueNotifier<String?> selectedClientNotifier = ValueNotifier<String?>(null);
+    ValueNotifier<Uint8List?> selectedImageNotifier = ValueNotifier<Uint8List?>(null);
     ValueNotifier<String?> imageNameNotifier = ValueNotifier<String?>(null);
 
     categoryNameController.text = widget.categoryData['categoryName'];
@@ -100,20 +98,17 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           // New image was selected
                           Uint8List imageBytes = selectedImageNotifier.value!;
                           String imageName = imageNameNotifier.value ?? '';
-                          newImagePath = await DatabaseMethods()
-                              .uploadImage(widget.id, imageName, imageBytes);
+                          newImagePath = await DatabaseMethods().uploadImage(widget.id, imageName, imageBytes);
                         }
 
                         Map<String, dynamic> updatedData = {
                           'categoryName': categoryNameController.text,
                           'description': descriptionController.text,
-                          'value': selectedClientNotifier.value ??
-                              widget.categoryData['value'],
+                          'value': selectedClientNotifier.value ?? widget.categoryData['value'],
                           'imagePath': newImagePath,
                         };
 
-                        await DatabaseMethods()
-                            .updateVendorCategoryDetail(widget.id, updatedData);
+                        await DatabaseMethods().updateVendorCategoryDetail(context, widget.id, updatedData);
 
                         // Clear the fields
                         categoryNameController.clear();
