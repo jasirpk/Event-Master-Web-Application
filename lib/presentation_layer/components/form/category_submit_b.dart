@@ -51,11 +51,16 @@ class SubmitButton extends StatelessWidget {
                   .addVendorCategoryDetail(context,
                 categoryFields,
                 id,
-                'Categories/$id/$imagePath',
+                imagePath,
                 imageBytes,
                 isEditing: isEditing ?? false,
               )
-                  .then((value) {
+                  .then((success) {
+                if (!success) {
+                  // addVendorCategoryDetail already showed an error
+                  // snackbar; keep the form populated so the user can retry.
+                  return;
+                }
                 Fluttertoast.showToast(
                   msg:
                       "The Category Details are ${isEditing == true ? 'updated' : 'added'} successfully",

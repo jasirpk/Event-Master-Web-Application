@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
+import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/components/auth/pushable_button.dart';
 import 'package:event_master_web/presentation_layer/components/form/custom_textfield.dart';
@@ -98,7 +99,15 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           // New image was selected
                           Uint8List imageBytes = selectedImageNotifier.value!;
                           String imageName = imageNameNotifier.value ?? '';
-                          newImagePath = await DatabaseMethods().uploadImage(widget.id, imageName, imageBytes);
+                          final uploadedObjectKey = await DatabaseMethods().uploadImage(widget.id, imageName, imageBytes);
+                          if (uploadedObjectKey == null) {
+                            // Upload failed — do not touch Firestore, so the
+                            // existing imagePath is left exactly as it was.
+                            showCustomSnackBar(context, 'Error',
+                                'Failed to upload the new image. The category was not updated.');
+                            return;
+                          }
+                          newImagePath = uploadedObjectKey;
                         }
 
                         Map<String, dynamic> updatedData = {
