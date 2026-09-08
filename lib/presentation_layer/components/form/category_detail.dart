@@ -1,6 +1,7 @@
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/category/edit_category.dart';
+import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,15 +25,23 @@ class CategoryDetailWidget extends StatelessWidget {
       expandedHeight: screenHeight * 0.6,
       flexibleSpace: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(categoryData['imagePath']),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.1),
-                  BlendMode.color,
-                ),
+          MediaImage(
+            imagePath: categoryData['imagePath'] as String?,
+            placeholder: const AssetImage(
+              'assets/images/Screenshot 2024-05-22 205021.png',
+            ),
+            builder: (context, image) => Container(
+              decoration: BoxDecoration(
+                image: image == null
+                    ? null
+                    : DecorationImage(
+                        image: image,
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.1),
+                          BlendMode.color,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -49,7 +58,8 @@ class CategoryDetailWidget extends StatelessWidget {
                 } else if (value == 'delete') {
                   await databaseMethods.deleteVendorCategoryDeatail(documentId);
                   Get.back();
-                  showCustomSnackBar(context, 'Deleted ⚠ ', 'category deleted Successfully!');
+                  showCustomSnackBar(
+                      context, 'Deleted ⚠ ', 'category deleted Successfully!');
                 }
               },
               itemBuilder: (context) => [

@@ -4,6 +4,7 @@ import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/category.dart';
 import 'package:event_master_web/presentation_layer/components/shimmer/carousal.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/category/read_category.dart';
+import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,14 +28,16 @@ class CarousalSliderWidget extends StatelessWidget {
       itemCount: documents.length,
       itemBuilder: (context, index, pageIndex) {
         var data = documents[index].data() as Map<String, dynamic>;
-        String imagePath = data['imagePath'] ?? 'assets/images/Screenshot 2024-05-22 205021.png';
+        String imagePath = data['imagePath'] ??
+            'assets/images/Screenshot 2024-05-22 205021.png';
         String documentId = documents[index].id;
 
         return FutureBuilder<DocumentSnapshot>(
           future: databaseMethods.getCategoryDetailById(documentId),
           builder: (context, detailSnapshot) {
             if (detailSnapshot.connectionState == ConnectionState.waiting) {
-              return ShimmerCarouselItem(screenWidth: screenWidth, screenHeight: screenHeight);
+              return ShimmerCarouselItem(
+                  screenWidth: screenWidth, screenHeight: screenHeight);
             }
             if (!detailSnapshot.hasData) {
               return Center(
@@ -43,74 +46,86 @@ class CarousalSliderWidget extends StatelessWidget {
                 ),
               );
             }
-            var detailData = detailSnapshot.data!.data() as Map<String, dynamic>;
+            var detailData =
+                detailSnapshot.data!.data() as Map<String, dynamic>;
 
-            return InkWell(
-              onTap: () {
-                Get.to(() => CategoryDetailScreen(categoryData: detailData));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF37474F),
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: imagePath.startsWith('http') ? NetworkImage(imagePath) : AssetImage(imagePath) as ImageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                  border: Border.all(color: Colors.teal),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.3)),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 8, top: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            detailData['categoryName'] ?? 'No Name',
-                            maxLines: 2,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: screenHeight * 0.028,
-                              letterSpacing: 1,
+            return MediaImage(
+                imagePath: imagePath,
+                placeholder: const AssetImage(
+                    'assets/images/Screenshot 2024-05-22 205021.png'),
+                builder: (context, image) => InkWell(
+                      onTap: () {
+                        Get.to(() =>
+                            CategoryDetailScreen(categoryData: detailData));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF37474F),
+                          borderRadius: BorderRadius.circular(10),
+                          image: image == null
+                              ? null
+                              : DecorationImage(
+                                  image: image, fit: BoxFit.cover),
+                          border: Border.all(color: Colors.teal),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(color: Colors.black.withOpacity(0.3)),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 8, top: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    detailData['categoryName'] ?? 'No Name',
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: screenHeight * 0.028,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ),
+                                PopupMenuButton(
+                                  onSelected: (value) async {
+                                    if (value == 'View Detail') {
+                                      Get.to(
+                                          () => CategoryDetailScreen(
+                                              categoryData: detailData),
+                                          transition: Transition.leftToRight);
+                                    } else if (value == 'delete') {
+                                      await databaseMethods
+                                          .deleteVendorCategoryDeatail(
+                                              documentId);
+                                      showCustomSnackBar(context, 'Deleted ⚠ ',
+                                          'category deleted Successfully!');
+                                    }
+                                  },
+                                  itemBuilder: (context) {
+                                    return [
+                                      PopupMenuItem(
+                                        child: Text('Delete'),
+                                        value: 'delete',
+                                      ),
+                                      PopupMenuItem(
+                                        child: Text('View Detail'),
+                                        value: 'View Detail',
+                                      ),
+                                    ];
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        PopupMenuButton(
-                          onSelected: (value) async {
-                            if (value == 'View Detail') {
-                              Get.to(() => CategoryDetailScreen(categoryData: detailData), transition: Transition.leftToRight);
-                            } else if (value == 'delete') {
-                              await databaseMethods.deleteVendorCategoryDeatail(documentId);
-                              showCustomSnackBar(context, 'Deleted ⚠ ', 'category deleted Successfully!');
-                            }
-                          },
-                          itemBuilder: (context) {
-                            return [
-                              PopupMenuItem(
-                                child: Text('Delete'),
-                                value: 'delete',
-                              ),
-                              PopupMenuItem(
-                                child: Text('View Detail'),
-                                value: 'View Detail',
-                              ),
-                            ];
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
+                      ),
+                    ));
           },
         );
       },

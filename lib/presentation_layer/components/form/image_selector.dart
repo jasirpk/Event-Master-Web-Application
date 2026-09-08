@@ -4,6 +4,8 @@ import 'package:event_master_web/data_layer/category_bloc/vendor_category_bloc.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
+
 class ImageSelector extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
@@ -60,20 +62,18 @@ class ImageSelector extends StatelessWidget {
                         height: screenHeight * 0.3,
                       )
                     : initialImageUrl != null
-                        ? Image.network(
-                            initialImageUrl!,
-                            fit: BoxFit.cover,
-                            width: screenWidth * 0.3,
-                            height: screenHeight * 0.3,
+                        ? MediaImage(
+                            imagePath: initialImageUrl,
+                            builder: (context, image) => image == null
+                                ? _emptyPreview(screenWidth, screenHeight)
+                                : Image(
+                                    image: image,
+                                    fit: BoxFit.cover,
+                                    width: screenWidth * 0.3,
+                                    height: screenHeight * 0.3,
+                                  ),
                           )
-                        : Container(
-                            width: screenWidth * 0.3,
-                            height: screenHeight * 0.3,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
+                        : _emptyPreview(screenWidth, screenHeight),
                 SizedBox(height: 10),
                 if (imageNameNotifier.value != null)
                   Row(
@@ -107,3 +107,15 @@ class ImageSelector extends StatelessWidget {
     );
   }
 }
+
+/// The empty-slot box. Also stands in while an R2 objectKey is being signed
+/// and if signing fails, so the preview keeps its size and never flashes a
+/// spinner.
+Widget _emptyPreview(double screenWidth, double screenHeight) => Container(
+      width: screenWidth * 0.3,
+      height: screenHeight * 0.3,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
