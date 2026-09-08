@@ -3,13 +3,20 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:event_master_web/data_layer/services/image_content_type.dart';
+import 'package:event_master_web/data_layer/services/media_service.dart';
 import 'package:flutter/cupertino.dart';
 
 class SubDatabaseMethods {
   // Sub-categories operations
-  Future<void> addSubCategory(BuildContext context,String categoryId, String subCategoryId,
-      Map<String, dynamic> subCategoryDetails, Uint8List? imageBytes,
+  /// Returns true only when the sub-category was actually written to
+  /// Firestore, so callers don't report success after a failed upload.
+  Future<bool> addSubCategory(
+      BuildContext context,
+      String categoryId,
+      String subCategoryId,
+      Map<String, dynamic> subCategoryDetails,
+      Uint8List? imageBytes,
       {bool isEditing = false}) async {
     try {
       String? imagePath;
@@ -32,10 +39,12 @@ class SubDatabaseMethods {
           .set(subCategoryDetails);
 
       log('Sub-category added successfully');
-      showCustomSnackBar(context,'Success', 'Sub-category added successfully');
+      showCustomSnackBar(context, 'Success', 'Sub-category added successfully');
+      return true;
     } catch (e) {
       log('Error adding sub-category: $e');
-      showCustomSnackBar(context,'Error', 'Failed to add sub-category');
+      showCustomSnackBar(context, 'Error', 'Failed to add sub-category');
+      return false;
     }
   }
 
@@ -55,18 +64,28 @@ class SubDatabaseMethods {
     }
   }
 
+  /// Uploads [imageBytes] (the file named [imageName]) for sub-category [id]
+  /// through the Media API/R2 and returns the resulting R2 objectKey — not a
+  /// download URL. The Media API owns the object-key shape; this method no
+  /// longer builds a Storage path itself.
+  ///
+  /// Returns null (and logs) on any failure — an unsupported file extension,
+  /// a Media API error, or an R2 upload error — so callers can keep using
+  /// their existing "imagePath == null" failure check.
   Future<String?> uploadImage(
       String id, String imageName, Uint8List imageBytes) async {
     try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('category_images/$id/$imageName');
-      UploadTask uploadTask = storageRef.putData(imageBytes);
-      TaskSnapshot snapshot = await uploadTask.whenComplete(() => {});
-      String downloadUrl = await snapshot.ref.getDownloadURL();
+      final contentType = imageContentTypeFromFileName(imageName);
+      final objectKey = await MediaService().uploadImage(
+        bytes: imageBytes,
+        entityId: id,
+        fileName: imageName,
+        contentType: contentType,
+        folder: 'subcategory_images',
+      );
 
-      log('Image uploaded successfully. URL: $downloadUrl');
-      return downloadUrl;
+      log('Image uploaded successfully. objectKey: $objectKey');
+      return objectKey;
     } catch (e) {
       log('Error uploading image: $e');
       return null;
@@ -81,8 +100,8 @@ class SubDatabaseMethods {
         .snapshots();
   }
 
-  Future<void> updateSubCategory(BuildContext context,String categoryId, String subCategoryId,
-      Map<String, dynamic> subCategoryDetails) async {
+  Future<void> updateSubCategory(BuildContext context, String categoryId,
+      String subCategoryId, Map<String, dynamic> subCategoryDetails) async {
     try {
       await FirebaseFirestore.instance
           .collection('Categories')
@@ -90,12 +109,13 @@ class SubDatabaseMethods {
           .collection('SubCategories')
           .doc(subCategoryId)
           .update(subCategoryDetails);
-      showCustomSnackBar(context,'Success', 'Sub-category updated successfully.');
+      showCustomSnackBar(
+          context, 'Success', 'Sub-category updated successfully.');
       log('Sub-category updated successfully.');
     } catch (e) {
       log('Error updating sub-category detail: $e');
-      showCustomSnackBar(context,
-          'Error', 'Failed to update sub-category details. Please try again.');
+      showCustomSnackBar(context, 'Error',
+          'Failed to update sub-category details. Please try again.');
     }
   }
 

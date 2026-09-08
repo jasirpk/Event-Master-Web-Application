@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/sub_category/read_sub_category.dart';
+import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
 import 'package:flutter/material.dart';
 import 'package:event_master_web/data_layer/services/sub_category.dart';
 import 'package:get/get.dart';
@@ -40,7 +41,8 @@ class SubCategoryWidget extends StatelessWidget {
             children: [
               GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(), // Disable GridView's scrolling
+                physics:
+                    NeverScrollableScrollPhysics(), // Disable GridView's scrolling
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                   crossAxisSpacing: 8,
@@ -50,19 +52,24 @@ class SubCategoryWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   var document = documents[index];
                   var data = document.data() as Map<String, dynamic>;
-                  String imagePath = data['imagePath'] ?? 'assets/images/default.png';
+                  String imagePath = data['imagePath'] ??
+                      'assets/images/Screenshot 2024-05-22 205021.png';
                   String subCategoryId = document.id;
 
                   return FutureBuilder<DocumentSnapshot>(
-                    future: subDatabaseMethods.getSubCategoryById(templateId, subCategoryId),
+                    future: subDatabaseMethods.getSubCategoryById(
+                        templateId, subCategoryId),
                     builder: (context, detailSnapshot) {
-                      if (detailSnapshot.connectionState == ConnectionState.waiting) {
+                      if (detailSnapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
                       }
 
-                      if (!detailSnapshot.hasData || detailSnapshot.data == null || detailSnapshot.data!.data() == null) {
+                      if (!detailSnapshot.hasData ||
+                          detailSnapshot.data == null ||
+                          detailSnapshot.data!.data() == null) {
                         return Center(
                           child: Text(
                             'Details not found for $subCategoryId',
@@ -71,69 +78,86 @@ class SubCategoryWidget extends StatelessWidget {
                         );
                       }
 
-                      var detailData = detailSnapshot.data!.data() as Map<String, dynamic>;
+                      var detailData =
+                          detailSnapshot.data!.data() as Map<String, dynamic>;
 
-                      return InkWell(
-                        onTap: () {
-                          Get.to(() => SubCategoryDetailScreen(categoryId: templateId, subCategoryData: detailData));
-                        },
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.018,
-                          margin: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: imagePath.startsWith('http') ? NetworkImage(imagePath) : AssetImage(imagePath) as ImageProvider,
-                                fit: BoxFit.cover),
-                            color: Color(0xFF37474F),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.teal),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 8, top: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    detailData['subCategoryName'] ?? 'No Name',
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: screenHeight * 0.028,
-                                      letterSpacing: 1,
-                                      color: Colors.white,
+                      return MediaImage(
+                          imagePath: imagePath,
+                          placeholder: const AssetImage(
+                              'assets/images/Screenshot 2024-05-22 205021.png'),
+                          builder: (context, image) => InkWell(
+                                onTap: () {
+                                  Get.to(() => SubCategoryDetailScreen(
+                                      categoryId: templateId,
+                                      subCategoryData: detailData));
+                                },
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.018,
+                                  margin: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    image: image == null
+                                        ? null
+                                        : DecorationImage(
+                                            image: image, fit: BoxFit.cover),
+                                    color: Color(0xFF37474F),
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.teal),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 8, top: 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            detailData['subCategoryName'] ??
+                                                'No Name',
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: screenHeight * 0.028,
+                                              letterSpacing: 1,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        PopupMenuButton(
+                                          onSelected: (value) async {
+                                            if (value == 'edit') {
+                                              // Navigate to edit screen
+                                            } else if (value == 'delete') {
+                                              await subDatabaseMethods
+                                                  .deleteSubCategory(templateId,
+                                                      detailData['id']);
+
+                                              showCustomSnackBar(
+                                                  context,
+                                                  'Deleted ⚠ ',
+                                                  'Category deleted successfully!');
+                                            }
+                                          },
+                                          itemBuilder: (context) {
+                                            return [
+                                              PopupMenuItem(
+                                                child: Text('Delete'),
+                                                value: 'delete',
+                                              ),
+                                              PopupMenuItem(
+                                                child: Text('View Detail'),
+                                                value: 'View Detail',
+                                              ),
+                                            ];
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                PopupMenuButton(
-                                  onSelected: (value) async {
-                                    if (value == 'edit') {
-                                      // Navigate to edit screen
-                                    } else if (value == 'delete') {
-                                      await subDatabaseMethods.deleteSubCategory(templateId, detailData['id']);
-
-                                      showCustomSnackBar(context, 'Deleted ⚠ ', 'Category deleted successfully!');
-                                    }
-                                  },
-                                  itemBuilder: (context) {
-                                    return [
-                                      PopupMenuItem(
-                                        child: Text('Delete'),
-                                        value: 'delete',
-                                      ),
-                                      PopupMenuItem(
-                                        child: Text('View Detail'),
-                                        value: 'View Detail',
-                                      ),
-                                    ];
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                              ));
                     },
                   );
                 },

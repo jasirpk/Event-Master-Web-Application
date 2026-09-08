@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
 import 'package:event_master_web/data_layer/services/sub_category.dart';
 import 'package:event_master_web/presentation_layer/screens/dashboard/sub_category/edit_sub_category.dart';
+import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +11,8 @@ class SubCategoryDetailScreen extends StatelessWidget {
   final Map<String, dynamic> subCategoryData;
   final SubDatabaseMethods subDatabaseMethods = SubDatabaseMethods();
 
-  SubCategoryDetailScreen({super.key, required this.categoryId, required this.subCategoryData});
+  SubCategoryDetailScreen(
+      {super.key, required this.categoryId, required this.subCategoryData});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +37,21 @@ class SubCategoryDetailScreen extends StatelessWidget {
                   expandedHeight: screenHeight * 0.6,
                   flexibleSpace: Stack(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(subCategoryData['imagePath']),
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.color),
+                      MediaImage(
+                        imagePath: subCategoryData['imagePath'] as String?,
+                        placeholder: const AssetImage(
+                            'assets/images/Screenshot 2024-05-22 205021.png'),
+                        builder: (context, image) => Container(
+                          decoration: BoxDecoration(
+                            image: image == null
+                                ? null
+                                : DecorationImage(
+                                    image: image,
+                                    fit: BoxFit.cover,
+                                    colorFilter: ColorFilter.mode(
+                                        Colors.black.withOpacity(0.1),
+                                        BlendMode.color),
+                                  ),
                           ),
                         ),
                       ),
@@ -51,11 +62,15 @@ class SubCategoryDetailScreen extends StatelessWidget {
                           onSelected: (value) async {
                             if (value == 'edit') {
                               Get.to(() => EditSubCategoryScreen(
-                                  categoryId: categoryId, subCategoryId: subCategoryData['id'], subCategoryData: subCategoryData));
+                                  categoryId: categoryId,
+                                  subCategoryId: subCategoryData['id'],
+                                  subCategoryData: subCategoryData));
                             } else if (value == 'delete') {
-                              await subDatabaseMethods.deleteSubCategory(categoryId, subCategoryData['id']);
+                              await subDatabaseMethods.deleteSubCategory(
+                                  categoryId, subCategoryData['id']);
                               Get.back();
-                              showCustomSnackBar(context, 'Deleted ⚠ ', 'Category deleted successfully!');
+                              showCustomSnackBar(context, 'Deleted ⚠ ',
+                                  'Category deleted successfully!');
                             }
                           },
                           itemBuilder: (context) => [
