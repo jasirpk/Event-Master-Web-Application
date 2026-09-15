@@ -3,41 +3,9 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/bussiness_layer/repos/snackbar.dart';
+import 'package:event_master_web/data_layer/services/image_content_type.dart';
 import 'package:event_master_web/data_layer/services/media_service.dart';
 import 'package:flutter/material.dart';
-
-/// Thrown by [DatabaseMethods.uploadImage] when the selected file's
-/// extension isn't one the Media API accepts (image/jpeg, image/png,
-/// image/webp). Caught internally so the existing "upload failed" flow
-/// handles it the same way as any other upload failure.
-class UnsupportedImageTypeException implements Exception {
-  final String fileName;
-  UnsupportedImageTypeException(this.fileName);
-
-  @override
-  String toString() =>
-      'UnsupportedImageTypeException: "$fileName" is not a supported image type (allowed: .jpg, .jpeg, .png, .webp)';
-}
-
-/// Maps a selected file's extension to the MIME type the Media API accepts.
-/// Throws [UnsupportedImageTypeException] for anything else, so an
-/// unsupported file fails before the Media API is ever called.
-String _mimeTypeFromFileName(String fileName) {
-  final dotIndex = fileName.lastIndexOf('.');
-  final extension =
-      dotIndex == -1 ? '' : fileName.substring(dotIndex + 1).toLowerCase();
-  switch (extension) {
-    case 'jpg':
-    case 'jpeg':
-      return 'image/jpeg';
-    case 'png':
-      return 'image/png';
-    case 'webp':
-      return 'image/webp';
-    default:
-      throw UnsupportedImageTypeException(fileName);
-  }
-}
 
 class DatabaseMethods {
   Future<bool> addVendorCategoryDetail(BuildContext context,Map<String, dynamic> categoryDetails, String id, String imageName, Uint8List imageBytes,
@@ -117,8 +85,8 @@ class DatabaseMethods {
   /// keep using their existing "imagePath == null" failure check.
   Future<String?> uploadImage(String id, String imageName, Uint8List imageBytes) async {
     try {
-      final contentType = _mimeTypeFromFileName(imageName);
-      final objectKey = await MediaService().uploadImage(
+      final contentType = imageContentTypeFromFileName(imageName);
+      final objectKey = await MediaService.instance.uploadImage(
         bytes: imageBytes,
         entityId: id,
         fileName: imageName,

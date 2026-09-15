@@ -28,8 +28,7 @@ class CarousalSliderWidget extends StatelessWidget {
       itemCount: documents.length,
       itemBuilder: (context, index, pageIndex) {
         var data = documents[index].data() as Map<String, dynamic>;
-        String imagePath = data['imagePath'] ??
-            'assets/images/Screenshot 2024-05-22 205021.png';
+        String imagePath = data['imagePath'] ?? kMediaPlaceholderAsset;
         String documentId = documents[index].id;
 
         return FutureBuilder<DocumentSnapshot>(
@@ -51,8 +50,7 @@ class CarousalSliderWidget extends StatelessWidget {
 
             return MediaImage(
                 imagePath: imagePath,
-                placeholder: const AssetImage(
-                    'assets/images/Screenshot 2024-05-22 205021.png'),
+                placeholder: kMediaPlaceholderImage,
                 builder: (context, image) => InkWell(
                       onTap: () {
                         Get.to(() =>

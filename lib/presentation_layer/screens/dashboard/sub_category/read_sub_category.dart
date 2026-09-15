@@ -39,8 +39,7 @@ class SubCategoryDetailScreen extends StatelessWidget {
                     children: [
                       MediaImage(
                         imagePath: subCategoryData['imagePath'] as String?,
-                        placeholder: const AssetImage(
-                            'assets/images/Screenshot 2024-05-22 205021.png'),
+                        placeholder: kMediaPlaceholderImage,
                         builder: (context, image) => Container(
                           decoration: BoxDecoration(
                             image: image == null

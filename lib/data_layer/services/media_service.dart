@@ -49,6 +49,13 @@ class MediaApiException implements Exception {
 /// just attaches the current Firebase ID token. It does not check or
 /// duplicate the admin-claim logic that lives in AuthBloc.
 class MediaService {
+  /// The instance every caller should use.
+  ///
+  /// Each [MediaService] opens its own `http.Client`, so constructing one per
+  /// upload or per image leaked a client each time. The constructor stays
+  /// public so a test can still inject its own client.
+  static final MediaService instance = MediaService();
+
   final http.Client _client;
 
   MediaService({http.Client? client}) : _client = client ?? http.Client();

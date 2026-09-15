@@ -19,10 +19,7 @@ class MediaImageResolver {
 
   static final MediaImageResolver instance = MediaImageResolver._();
 
-  /// One long-lived client for every read. [MediaService] opens an
-  /// `http.Client` per instance, so building one per image would leak a
-  /// client per tile.
-  final MediaService _mediaService = MediaService();
+  final MediaService _mediaService = MediaService.instance;
 
   final Map<String, _SignedUrl> _cache = {};
 

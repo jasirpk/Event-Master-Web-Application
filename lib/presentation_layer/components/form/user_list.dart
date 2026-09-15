@@ -61,8 +61,7 @@ class UserListWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               var data =
                   filteredDocuments[index].data() as Map<String, dynamic>;
-              String imagePath = data['imagePath'] ??
-                  'assets/images/Screenshot 2024-05-22 205021.png';
+              String imagePath = data['imagePath'] ?? kMediaPlaceholderAsset;
               String documentId = filteredDocuments[index].id;
 
               return FutureBuilder<DocumentSnapshot>(
@@ -86,8 +85,7 @@ class UserListWidget extends StatelessWidget {
 
                   return MediaImage(
                       imagePath: imagePath,
-                      placeholder: const AssetImage(
-                          'assets/images/Screenshot 2024-05-22 205021.png'),
+                      placeholder: kMediaPlaceholderImage,
                       builder: (context, image) => InkWell(
                             onTap: () {
                               Get.to(() => CategoryDetailScreen(

@@ -76,7 +76,7 @@ class SubDatabaseMethods {
       String id, String imageName, Uint8List imageBytes) async {
     try {
       final contentType = imageContentTypeFromFileName(imageName);
-      final objectKey = await MediaService().uploadImage(
+      final objectKey = await MediaService.instance.uploadImage(
         bytes: imageBytes,
         entityId: id,
         fileName: imageName,
