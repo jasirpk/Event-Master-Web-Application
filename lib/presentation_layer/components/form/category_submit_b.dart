@@ -48,7 +48,8 @@ class SubmitButton extends StatelessWidget {
 
             if (imagePath != null && imageBytes != null) {
               await DatabaseMethods()
-                  .addVendorCategoryDetail(context,
+                  .addVendorCategoryDetail(
+                context,
                 categoryFields,
                 id,
                 imagePath,
@@ -62,8 +63,7 @@ class SubmitButton extends StatelessWidget {
                   return;
                 }
                 Fluttertoast.showToast(
-                  msg:
-                      "The Category Details are ${isEditing == true ? 'updated' : 'added'} successfully",
+                  msg: "The Category Details are ${isEditing == true ? 'updated' : 'added'} successfully",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,
@@ -99,8 +99,7 @@ class SubmitButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30), // Rounded corners
           ),
-          padding:
-              EdgeInsets.symmetric(horizontal: 20, vertical: 15), // Padding
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15), // Padding
         ),
         child: Text(
           'Submit',

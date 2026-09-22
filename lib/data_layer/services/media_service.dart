@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:http/browser_client.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
@@ -58,7 +58,7 @@ class MediaService {
 
   final http.Client _client;
 
-  MediaService({http.Client? client}) : _client = client ?? http.Client();
+  MediaService({http.Client? client}) : _client = client ?? (BrowserClient()..withCredentials = false);
 
   /// Uploads [bytes] as [fileName] ([contentType]) for [entityId], under
   /// [folder] (defaults to 'category_images', the only folder this app uses
@@ -96,13 +96,11 @@ class MediaService {
       );
     }
 
-    final Map<String, dynamic> presign =
-        jsonDecode(presignResponse.body) as Map<String, dynamic>;
+    final Map<String, dynamic> presign = jsonDecode(presignResponse.body) as Map<String, dynamic>;
 
     final String? uploadUrl = presign['uploadUrl'] as String?;
     final String? objectKey = presign['objectKey'] as String?;
-    final String uploadContentType =
-        presign['contentType'] as String? ?? contentType;
+    final String uploadContentType = presign['contentType'] as String? ?? contentType;
 
     if (uploadUrl == null || objectKey == null) {
       throw MediaApiException(
@@ -153,8 +151,7 @@ class MediaService {
       );
     }
 
-    final Map<String, dynamic> body =
-        jsonDecode(response.body) as Map<String, dynamic>;
+    final Map<String, dynamic> body = jsonDecode(response.body) as Map<String, dynamic>;
     final String? downloadUrl = body['downloadUrl'] as String?;
 
     if (downloadUrl == null) {
