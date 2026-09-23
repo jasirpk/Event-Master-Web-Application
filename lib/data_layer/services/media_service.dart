@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/browser_client.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -12,10 +13,12 @@ import 'package:http/http.dart' as http;
 /// build/run time, e.g.:
 ///   flutter run --dart-define=MEDIA_API_BASE_URL=https://media.example.com
 /// The default below is a placeholder and must be overridden for real use.
-const String kMediaApiBaseUrl = String.fromEnvironment(
-  'MEDIA_API_BASE_URL',
-  defaultValue: 'https://media-api.event-master.example',
-);
+ final String kMediaApiBaseUrl = dotenv.env['MEDIA_API_BASE_URL'] ?? "";
+
+// const String kMediaApiBaseUrl = String.fromEnvironment(
+//   'MEDIA_API_BASE_URL',
+//   defaultValue: 'https://media-api.event-master.example',
+// );
 
 /// Thrown when a Media API request fails or returns an unexpected response.
 ///
