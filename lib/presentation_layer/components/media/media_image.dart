@@ -5,8 +5,7 @@ import 'package:event_master_web/data_layer/services/media_image_resolver.dart';
 /// The image shown wherever a category/sub-category picture is missing, still
 /// resolving, or failed to resolve. One constant so every grid, carousel and
 /// detail header falls back to the same thing.
-const String kMediaPlaceholderAsset =
-    'assets/images/Screenshot 2024-05-22 205021.png';
+const String kMediaPlaceholderAsset = 'assets/images/background_demo_img.png';
 
 /// [kMediaPlaceholderAsset] as a provider, for [MediaImage.placeholder].
 const AssetImage kMediaPlaceholderImage = AssetImage(kMediaPlaceholderAsset);
@@ -79,6 +78,5 @@ class _MediaImageState extends State<MediaImage> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      widget.builder(context, _image ?? widget.placeholder);
+  Widget build(BuildContext context) => widget.builder(context, _image ?? widget.placeholder);
 }

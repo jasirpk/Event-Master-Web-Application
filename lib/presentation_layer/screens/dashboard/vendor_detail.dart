@@ -1,4 +1,6 @@
 import 'package:event_master_web/common/style.dart';
+import 'package:event_master_web/data_layer/models/vendor_document.dart';
+import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
 import 'package:event_master_web/presentation_layer/components/users/richtext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,17 +46,22 @@ class VendorDetailScreen extends StatelessWidget {
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: Column(
                 children: [
-                  Container(
-                    height: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10)),
-                      image: DecorationImage(
-                        image: vendorImage.startsWith('http')
-                            ? NetworkImage(vendorImage)
-                            : AssetImage(vendorImage) as ImageProvider,
-                        fit: BoxFit.cover,
+                  // The main image is an R2 object key since the migration.
+                  MediaImage(
+                    imagePath: vendorImage,
+                    placeholder: kMediaPlaceholderImage,
+                    builder: (context, image) => Container(
+                      height: 300,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        image: image == null
+                            ? null
+                            : DecorationImage(
+                                image: image,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                   ),
@@ -111,7 +118,7 @@ class VendorDetailScreen extends StatelessWidget {
                                                   color: Colors.white),
                                               SizedBox(width: 10),
                                               Text(
-                                                data['text'],
+                                                vendorImageCaption(data),
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.w500,
                                                     fontSize:
@@ -120,14 +127,19 @@ class VendorDetailScreen extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        CircleAvatar(
-                                          maxRadius: 30,
-                                          backgroundColor: Colors.blue,
-                                          backgroundImage: data['imageUrl']
-                                                  .startsWith('http')
-                                              ? NetworkImage(data['imageUrl'])
-                                              : AssetImage(data['imageUrl'])
-                                                  as ImageProvider,
+                                        // Since the migration a component
+                                        // stores its key under 'imagePath';
+                                        // reading 'imageUrl' alone returned
+                                        // null and crashed on .startsWith.
+                                        MediaImage(
+                                          imagePath: vendorImageRef(data),
+                                          placeholder: kMediaPlaceholderImage,
+                                          builder: (context, image) =>
+                                              CircleAvatar(
+                                            maxRadius: 30,
+                                            backgroundColor: Colors.blue,
+                                            backgroundImage: image,
+                                          ),
                                         ),
                                       ],
                                     ),

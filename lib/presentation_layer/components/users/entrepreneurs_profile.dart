@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/data_layer/services/user_profile/profile.dart';
 import 'package:event_master_web/data_layer/services/user_profile/vendor_request.dart';
+import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
 import 'package:event_master_web/presentation_layer/components/shimmer/entrepreneurs.dart';
 import 'package:event_master_web/presentation_layer/components/users/entrepreneurs_fields.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class EntrepreneursProfileWidget extends StatelessWidget {
       crossAxisSpacing: 12,
       itemBuilder: (context, index) {
         var data = documents[index].data() as Map<String, dynamic>;
-        String imagePath = data['profileImage'];
+        String imagePath = data['profileImage'] ?? kMediaPlaceholderImage;
         String documentId = documents[index].id;
 
         return FutureBuilder<DocumentSnapshot>(

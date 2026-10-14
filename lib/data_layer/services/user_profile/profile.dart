@@ -6,7 +6,7 @@ class UserProfile {
   Stream<QuerySnapshot> getUserProfile() {
     return FirebaseFirestore.instance
         .collection('entrepreneurs')
-        .where('isValid', isEqualTo: true)
+        .where('isActive', isEqualTo: true)
         .snapshots();
   }
 

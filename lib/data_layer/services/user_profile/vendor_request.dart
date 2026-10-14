@@ -25,22 +25,35 @@ class VendorRequest {
     }
   }
 
+  /// Listings submitted for review and not yet decided.
+  ///
+  /// The two decision filters are what make this an inbox: accepting or
+  /// rejecting only flips those flags, so without them a listing stayed in
+  /// Requests for ever while also appearing under Accepted or Rejected.
   Stream<QuerySnapshot> getGeneratedCategoryDetails(String uid) {
     return FirebaseFirestore.instance
         .collection('entrepreneurs')
         .doc(uid)
         .collection('vendorDetails')
         .where('isValid', isEqualTo: true)
+        .where('isAccepted', isEqualTo: false)
+        .where('isRejected', isEqualTo: false)
         .snapshots();
   }
 
+  /// Listings the console has accepted.
+  ///
+  /// Only `isAccepted` is filtered. The two flags are set together by
+  /// [updateIsAcceptedField] and [updateIsRejectedField], so a second
+  /// `isRejected == false` filter added nothing — and it actively hid older
+  /// listings written before `isRejected` existed, because Firestore does not
+  /// match a document whose field is absent.
   Stream<QuerySnapshot> getAcceptedVendorList(String uid) {
     return FirebaseFirestore.instance
         .collection('entrepreneurs')
         .doc(uid)
         .collection('vendorDetails')
         .where('isAccepted', isEqualTo: true)
-        .where('isRejected', isEqualTo: false)
         .snapshots();
   }
 
@@ -63,13 +76,14 @@ class VendorRequest {
     }
   }
 
+  /// Listings the console has rejected. See [getAcceptedVendorList] for why
+  /// the complementary filter is deliberately absent.
   Stream<QuerySnapshot> getRejectedVendorList(String uid) {
     return FirebaseFirestore.instance
         .collection('entrepreneurs')
         .doc(uid)
         .collection('vendorDetails')
         .where('isRejected', isEqualTo: true)
-        .where('isAccepted', isEqualTo: false)
         .snapshots();
   }
 
