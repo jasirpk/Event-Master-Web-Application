@@ -1,4 +1,5 @@
 import 'package:event_master_web/bussiness_layer/models/ui_models/routs.dart';
+import 'package:event_master_web/common/error_diagnostics.dart';
 import 'package:event_master_web/data_layer/auth_bloc/auth_bloc.dart';
 import 'package:event_master_web/data_layer/category_bloc/vendor_category_bloc.dart';
 import 'package:event_master_web/firebase_options.dart';
@@ -10,6 +11,12 @@ import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // TEMPORARY — see [kErrorDiagnostics]. Installed before the first frame so
+  // that a build-phase error is logged in full rather than lost inside
+  // Flutter's own error renderer.
+  installErrorDiagnostics();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

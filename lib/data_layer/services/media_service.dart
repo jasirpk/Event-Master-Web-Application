@@ -140,7 +140,8 @@ class MediaService {
     final token = await _currentIdToken();
 
     final response = await _client.get(
-      Uri.parse('$kMediaApiBaseUrl/api/media/download-url').replace(
+      Uri.parse('$kMediaApiBaseUrl/api/media/public-download-url')
+          .replace(
         queryParameters: {'objectKey': objectKey},
       ),
       headers: {'Authorization': 'Bearer $token'},

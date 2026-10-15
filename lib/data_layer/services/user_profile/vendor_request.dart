@@ -41,11 +41,28 @@ class VendorRequest {
         .snapshots();
   }
 
+  /// Every listing this entrepreneur has submitted, whatever the console has
+  /// since decided about it.
+  ///
+  /// This is deliberately *not* [getGeneratedCategoryDetails]. That one is the
+  /// Requests inbox and excludes anything already accepted or rejected, which
+  /// is right for the inbox and wrong for anywhere that just needs to show the
+  /// entrepreneur: accepting their last pending listing emptied the inbox and
+  /// took the profile card with it.
+  Stream<QuerySnapshot> getVendorListingsForProfile(String uid) {
+    return FirebaseFirestore.instance
+        .collection('entrepreneurs')
+        .doc(uid)
+        .collection('vendorDetails')
+        .where('isValid', isEqualTo: true)
+        .snapshots();
+  }
+
   /// Listings the console has accepted.
   ///
   /// Only `isAccepted` is filtered. The two flags are set together by
-  /// [updateIsAcceptedField] and [updateIsRejectedField], so a second
-  /// `isRejected == false` filter added nothing — and it actively hid older
+  /// [setVendorDecision], so a second `isRejected == false` filter adds
+  /// nothing — and it actively hid older
   /// listings written before `isRejected` existed, because Firestore does not
   /// match a document whose field is absent.
   Stream<QuerySnapshot> getAcceptedVendorList(String uid) {
@@ -55,25 +72,6 @@ class VendorRequest {
         .collection('vendorDetails')
         .where('isAccepted', isEqualTo: true)
         .snapshots();
-  }
-
-  Future<void> updateIsAcceptedField(String uid, String documentId,
-      {required bool isAccepted, required bool isRejected}) async {
-    try {
-      CollectionReference vendorDetailsRef = FirebaseFirestore.instance
-          .collection('entrepreneurs')
-          .doc(uid)
-          .collection('vendorDetails');
-
-      await vendorDetailsRef
-          .doc(documentId)
-          .update({'isAccepted': isAccepted, 'isRejected': isRejected});
-
-      print('isAccepted field updated successfully.');
-    } catch (e) {
-      log('Error updating isValid field: $e');
-      throw Exception('Failed to update isValid field: $e');
-    }
   }
 
   /// Listings the console has rejected. See [getAcceptedVendorList] for why
@@ -87,22 +85,47 @@ class VendorRequest {
         .snapshots();
   }
 
-  Future<void> updateIsRejectedField(String uid, String documentId,
-      {required bool isRejected, required bool isAccepted}) async {
-    try {
-      CollectionReference vendorDetailsRef = FirebaseFirestore.instance
-          .collection('entrepreneurs')
-          .doc(uid)
-          .collection('vendorDetails');
+  /// One listing, watched live.
+  ///
+  /// The details screen reads the document rather than the arguments it was
+  /// opened with, so a decision taken on that screen is reflected by it
+  /// instead of leaving a stale badge behind.
+  Stream<DocumentSnapshot<Map<String, dynamic>>> watchVendor(
+      String uid, String vendorId) {
+    return FirebaseFirestore.instance
+        .collection('entrepreneurs')
+        .doc(uid)
+        .collection('vendorDetails')
+        .doc(vendorId)
+        .snapshots();
+  }
 
-      await vendorDetailsRef
-          .doc(documentId)
-          .update({'isRejected': isRejected, 'isAccepted': isAccepted});
-
-      print('isRejected field updated successfully.');
-    } catch (e) {
-      log('Error updating isValid field: $e');
-      throw Exception('Failed to update isValid field: $e');
-    }
+  /// Records the console's decision about one listing.
+  ///
+  /// The two flags are deliberately written together in a single update. They
+  /// are not independent — they encode one tri-state — and setting them apart
+  /// is what would let a listing show up under two tabs at once, or vanish
+  /// from all three.
+  ///
+  /// This writes nothing else. In particular it does not touch the listing's
+  /// own `isValid`, which records that the listing was submitted rather than
+  /// what was decided about it, and it does not touch
+  /// `entrepreneurs/{uid}.isValid`, which is the separate question of whether
+  /// the *person* is approved. Those two share a name and nothing else.
+  ///
+  /// Errors are left to propagate: the caller is a UI that has to tell the
+  /// administrator the write failed, and it can only do that honestly if the
+  /// failure reaches it.
+  Future<void> setVendorDecision(
+    String uid,
+    String vendorId, {
+    required bool accepted,
+  }) {
+    return FirebaseFirestore.instance
+        .collection('entrepreneurs')
+        .doc(uid)
+        .collection('vendorDetails')
+        .doc(vendorId)
+        .update({'isAccepted': accepted, 'isRejected': !accepted});
   }
 }

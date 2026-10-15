@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_master_web/data_layer/services/user_profile/profile.dart';
 import 'package:event_master_web/data_layer/services/user_profile/vendor_request.dart';
-import 'package:event_master_web/presentation_layer/components/media/media_image.dart';
 import 'package:event_master_web/presentation_layer/components/shimmer/entrepreneurs.dart';
 import 'package:event_master_web/presentation_layer/components/users/entrepreneurs_fields.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +31,15 @@ class EntrepreneursProfileWidget extends StatelessWidget {
       crossAxisSpacing: 12,
       itemBuilder: (context, index) {
         var data = documents[index].data() as Map<String, dynamic>;
-        String imagePath = data['profileImage'] ?? kMediaPlaceholderImage;
+        // kMediaPlaceholderImage is an AssetImage, not a String: assigning it
+        // here threw a TypeError for any entrepreneur with no profileImage.
+        // An empty string is the honest "nothing stored" value, and
+        // MediaImage already renders its placeholder for one.
+        final String imagePath = (data['profileImage'] as String?) ?? '';
+        // Read from the stream document, not the FutureBuilder below: this
+        // one is live, so the card flips to Approved the moment the write
+        // lands without needing a manual refresh.
+        final bool isValid = data['isValid'] == true;
         String documentId = documents[index].id;
 
         return FutureBuilder<DocumentSnapshot>(
@@ -52,39 +59,35 @@ class EntrepreneursProfileWidget extends StatelessWidget {
             }
             var userDetail =
                 detailSnapshot.data!.data() as Map<String, dynamic>;
+            // One stream, not a stream wrapping a future built from a
+            // second copy of the same stream: the old pair opened two
+            // listeners and re-ran `.first` on every rebuild.
             return StreamBuilder<QuerySnapshot>(
-                stream: vendorRequest.getGeneratedCategoryDetails(documentId),
-                builder: (context, snapshot) {
-                  return FutureBuilder<QuerySnapshot>(
-                      future: vendorRequest
-                          .getGeneratedCategoryDetails(documentId)
-                          .first,
-                      builder: (context, vendorSnapshot) {
-                        if (vendorSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return ShimmerEntrepreneurs(
-                              screenHeight: screenHeight,
-                              screenWidth: screenWidth);
-                        }
-                        if (vendorSnapshot.hasError) {
-                          return Center(
-                            child: Text('Error: ${vendorSnapshot.error}'),
-                          );
-                        }
-                        if (!vendorSnapshot.hasData ||
-                            vendorSnapshot.data!.docs.isEmpty) {
-                          return Center(
-                              child: Text('Vendor Details not found'));
-                        }
-                        var vendorDetail = vendorSnapshot.data!.docs.first
-                            .data() as Map<String, dynamic>;
-                        return EntrepreneursFieldsWidget(
-                            documentId: documentId,
-                            screenHeight: screenHeight,
-                            imagePath: imagePath,
-                            userDetail: userDetail,
-                            vendorDetail: vendorDetail);
-                      });
+                stream: vendorRequest.getVendorListingsForProfile(documentId),
+                builder: (context, vendorSnapshot) {
+                  if (vendorSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return ShimmerEntrepreneurs(
+                        screenHeight: screenHeight, screenWidth: screenWidth);
+                  }
+                  // The listings supply one line of this card — the location.
+                  // Letting an empty or failed read return an error widget
+                  // replaced the entrepreneur entirely, so accepting their
+                  // last pending listing blanked the whole grid. An empty map
+                  // degrades that line and leaves the profile standing.
+                  final docs = vendorSnapshot.data?.docs ??
+                      const <QueryDocumentSnapshot<Object?>>[];
+                  final vendorDetail = docs.isEmpty
+                      ? const <String, dynamic>{}
+                      : docs.first.data() as Map<String, dynamic>;
+                  return EntrepreneursFieldsWidget(
+                      documentId: documentId,
+                      screenHeight: screenHeight,
+                      imagePath: imagePath,
+                      isValid: isValid,
+                      userProfile: userProfile,
+                      userDetail: userDetail,
+                      vendorDetail: vendorDetail);
                 });
           },
         );

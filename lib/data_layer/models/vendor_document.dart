@@ -75,3 +75,22 @@ String vendorImageCaption(Map<String, dynamic> entry) {
 
 /// A plain string field, or '' when absent — never a failed cast.
 String vendorText(dynamic raw) => raw is String ? raw : '';
+
+/// Where a listing sits in the review workflow.
+///
+/// The three Checklist tabs are a view of this one value. Deriving it in a
+/// single place is what keeps them mutually exclusive: a card decides which
+/// actions to offer from the document it was given, not from which tab it
+/// happens to be sitting in.
+enum VendorDecision { pending, accepted, rejected }
+
+/// The decision recorded on a vendor document.
+///
+/// Rejection is tested first so that a legacy document carrying both flags —
+/// written before the two were always set together — resolves to one state
+/// instead of reading as accepted in one place and rejected in another.
+VendorDecision vendorDecisionOf(Map<String, dynamic> data) {
+  if (data['isRejected'] == true) return VendorDecision.rejected;
+  if (data['isAccepted'] == true) return VendorDecision.accepted;
+  return VendorDecision.pending;
+}
